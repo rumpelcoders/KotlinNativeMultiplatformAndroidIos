@@ -1,4 +1,4 @@
-package com.jarhoax.multiplatform.core
+package com.jarhoax.multiplatform.core.model
 
 import kotlinx.serialization.Serializable
 

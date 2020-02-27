@@ -8,6 +8,7 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.jarhoax.multiplatform.core.FileManager
 import com.jarhoax.multiplatform.core.SlackApi
 import com.jarhoax.multiplatform.core.redirectUrl
 import com.jarhoax.multiplatform.demo.util.assetJsonString
@@ -24,44 +25,48 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val apiProperties = assetJsonString(applicationContext)
-        val token: String? = null // TODO load token from file
-        slackApi = SlackApi(apiProperties, token)
+        FileManager.initialize(applicationContext)
 
-        if (token.isNullOrEmpty()) {
-            authorize(slackApi)
-        }
+        val apiProperties = assetJsonString(applicationContext)
+        slackApi = SlackApi(apiProperties)
+
+        authorize(slackApi)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun authorize(slackApi: SlackApi) {
         web_view.visibility = View.VISIBLE
 
-        slackApi.authorize {
+        slackApi.authorize { result ->
             GlobalScope.apply {
                 launch(Dispatchers.Main) {
-                    web_view.settings.javaScriptEnabled = true;
-                    web_view.webViewClient = object : WebViewClient() {
-                        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                            if (url.startsWith(redirectUrl)) {
-                                swapViews()
+                    if (result == "ok") {
+                        swapViews()
+                    } else {
+                        web_view.settings.javaScriptEnabled = true;
+                        web_view.webViewClient = object : WebViewClient() {
+                            override fun shouldOverrideUrlLoading(
+                                view: WebView,
+                                url: String
+                            ): Boolean {
+                                if (url.startsWith(redirectUrl)) {
+                                    swapViews()
 
-                                slackApi.onRedirectCodeReceived(url) {
-                                    slackApi.readState {
-                                        Log.d(MainActivity::class.java.simpleName,it.toString())
+                                    slackApi.onRedirectCodeReceived(url) {
+                                        Log.d(MainActivity::class.java.simpleName, "Authenticated!")
                                     }
-                                    Log.d(MainActivity::class.java.simpleName, "Authenticated!")
+
+                                    return true
                                 }
-
-                                return true
+                                return false
                             }
-                            return false
                         }
-                    }
 
-                    web_view.loadDataWithBaseURL("", it, "text/html", "UTF-8", "")
+                        web_view.loadDataWithBaseURL("", result, "text/html", "UTF-8", "")
+                    }
                 }
             }
+
         }
     }
 

@@ -1,7 +1,8 @@
 package com.jarhoax.multiplatform.core
 
+import com.jarhoax.multiplatform.core.model.ApiProperties
+import com.jarhoax.multiplatform.core.model.Token
 import com.soywiz.klock.DateTime
-import com.soywiz.klock.TimeSpan
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -20,7 +21,8 @@ import kotlinx.serialization.json.Json
 
 internal expect val ApplicationDispatcher: CoroutineDispatcher
 
-class SlackApi(apiPropertiesString: String, private var token: String?) {
+@UnstableDefault
+class SlackApi(apiPropertiesString: String) {
 
     @UnstableDefault
     private val apiProperties: ApiProperties =
@@ -28,8 +30,20 @@ class SlackApi(apiPropertiesString: String, private var token: String?) {
 
     private val client = HttpClient()
     private val scope = "users.profile:write"
+    private var token: String? = null
+    private val tokenFilePath = FileManager.contentsDirectory.absolutePath?.byAppending("token.json")!!
 
     fun authorize(callback: (String) -> Unit) {
+        if (FileManager.exists(tokenFilePath)) {
+            FileManager.readFile(tokenFilePath, ContentEncoding.Utf8)?.let {
+                token = Json.plain.parse(Token.serializer(), it).token
+                if (!token.isNullOrEmpty()) {
+                    callback("ok")
+                    return
+                }
+            }
+        }
+
         val address =
             Url(
                 "https://slack.com/oauth/authorize?client_id=${apiProperties.clientId}" +
@@ -61,8 +75,19 @@ class SlackApi(apiPropertiesString: String, private var token: String?) {
                 val result: String = client.get {
                     url(address.toString())
                 }
-                //this is a hack (athon). Will probably break soon.s
+                //this is a hack(athon). Will probably break soon.s
                 token = result.split(",")[1].split("\"")[3].trim('"')
+
+                val tokenJson = """
+                        {
+                            "token" : "$token"
+                        }
+                        """.trimIndent()
+
+                tokenFilePath.let {
+                    FileManager.writeFile(it, tokenJson, true)
+                }
+
                 callback()
             }
         }
@@ -90,7 +115,8 @@ class SlackApi(apiPropertiesString: String, private var token: String?) {
     ) {
         val address = Url("${slackApiBaseUrl}/users.profile.set")
 
-        val expirationDateTime = if (duration <= 0) 0 else (DateTime.nowUnixLong() / 1000) + (duration * 60)
+        val expirationDateTime =
+            if (duration <= 0) 0 else (DateTime.nowUnixLong() / 1000) + (duration * 60)
 
         val b = Json.stringify(Profile.serializer(), Profile(SlackState(state,emoji,expirationDateTime)))
         GlobalScope.apply {
