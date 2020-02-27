@@ -99,5 +99,7 @@ class SlackApi(apiPropertiesString: String, private var token: String?) {
     }
 }
 
+fun SlackApi.clearState(callback: (String) -> Unit){ this.setState("","", 0, callback)}
+
 private const val slackApiBaseUrl: String = "https://slack.com/api/"
 const val redirectUrl: String = "http://www.test.com"
