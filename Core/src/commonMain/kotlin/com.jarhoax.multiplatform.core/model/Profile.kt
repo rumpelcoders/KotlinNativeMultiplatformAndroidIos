@@ -1,9 +1,9 @@
-package com.jarhoax.multiplatform.core
+package com.jarhoax.multiplatform.core.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Profile(
-    @SerialName("profile") val profile: SlackState
+    @SerialName("profile") val state: SlackState
 )
