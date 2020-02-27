@@ -3,10 +3,8 @@ package com.jarhoax.multiplatform.demo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import com.jarhoax.multiplatform.core.SlackApi
 import com.jarhoax.multiplatform.demo.util.assetJsonString
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,15 +19,6 @@ class MainActivity : AppCompatActivity() {
         val apiProperties = this.loadProperties()
         val slackApi = SlackApi(apiProperties.clientId, apiProperties.clientSecret)
 
-        slackApi.setState("Am i a train?", {
-            GlobalScope.apply {
-                launch(Dispatchers.Main) {
-                    Log.d("MainActivity", it)
-                }
-                return false
-            }
-        })
-
         slackApi.authorize {
             GlobalScope.apply {
                 launch(Dispatchers.Main) {
@@ -39,7 +28,9 @@ class MainActivity : AppCompatActivity() {
                         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                             if (url.startsWith("http://www.com.jarhoax.multiplatform.core.test.com")) {
                                 Log.d("MainActivity", url)
-                                slackApi.onRedirectCodeReceived(url)
+                                slackApi.onRedirectCodeReceived(url) {
+                                    Log.d(MainActivity::class.java.simpleName, "Authenticated!")
+                                }
                             }
                             return false
                         }
