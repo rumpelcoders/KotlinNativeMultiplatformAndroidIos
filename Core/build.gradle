@@ -32,12 +32,14 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api 'org.jetbrains.kotlin:kotlin-stdlib-common'
+            implementation("io.ktor:ktor-client-core:${rootProject.ext.ktor_version}")
         }
 
         androidMain.dependencies {
             api 'org.jetbrains.kotlin:kotlin-stdlib'
             api "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
             api "com.android.support:support-media-compat:${rootProject.ext.supportLibVersion}"
+            implementation("io.ktor:ktor-client-android:${rootProject.ext.ktor_version}")
         }
     }
 }
