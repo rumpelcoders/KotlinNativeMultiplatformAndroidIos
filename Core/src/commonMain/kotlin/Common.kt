@@ -16,7 +16,7 @@ internal expect val ApplicationDispatcher: CoroutineDispatcher
 class SlackApi {
     private val client = HttpClient()
 
-    var address = Url("https://tools.ietf.org/rfc/rfc1866.txt")
+    private val address = Url(slackApiBaseUrl+"api.test")
 
     fun about(callback: (String) -> Unit) {
         GlobalScope.apply {
@@ -24,9 +24,10 @@ class SlackApi {
                 val result: String = client.get {
                     url(this@SlackApi.address.toString())
                 }
-
                 callback(result)
             }
         }
     }
 }
+
+private const val slackApiBaseUrl: String = "https://slack.com/api/"
