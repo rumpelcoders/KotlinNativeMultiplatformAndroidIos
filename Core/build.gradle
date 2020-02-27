@@ -20,15 +20,16 @@ android {
 kotlin {
     targets {
         fromPreset(presets.android, 'android')
-        fromPreset(presets.iosX64, 'iosX64')
         fromPreset(presets.iosArm64, 'iosArm64')
-        fromPreset(presets.macosX64, 'macosX64')
     }
 
     sourceSets {
         commonMain.dependencies {
             api 'org.jetbrains.kotlin:kotlin-stdlib-common'
             implementation("io.ktor:ktor-client-core:${rootProject.ext.ktor_version}")
+            implementation("io.ktor:ktor-client-json-native:${rootProject.ext.ktor_version}")
+            implementation("io.ktor:ktor-client-auth-native:${rootProject.ext.ktor_version}")
+            implementation "io.ktor:ktor-auth:${rootProject.ext.ktor_version}"
         }
 
         androidMain.dependencies {
@@ -36,6 +37,7 @@ kotlin {
             api "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
             api "com.android.support:support-media-compat:${rootProject.ext.supportLibVersion}"
             implementation("io.ktor:ktor-client-android:${rootProject.ext.ktor_version}")
+            implementation("io.ktor:ktor-client-gson:${rootProject.ext.ktor_version}")
         }
     }
 }
