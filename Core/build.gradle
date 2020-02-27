@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-multiplatform'
 
+ext.serialization_version = '0.6.1'
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {

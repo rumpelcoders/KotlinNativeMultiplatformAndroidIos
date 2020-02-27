@@ -32,11 +32,9 @@ class SlackApi(val clientId: String, val clientSecret: String) {
 
     private val scope = "users.profile:write"
 
-    private val callback = "http://www.test.com"
-
     fun authorize(callback: (String) -> Unit) {
         val address =
-            Url("https://slack.com/oauth/authorize?client_id=$clientId&scope=$scope&redirect_uri=$callback")
+            Url("https://slack.com/oauth/authorize?client_id=$clientId&scope=$scope&redirect_uri=$redirectUrl")
         GlobalScope.apply {
             launch(ApplicationDispatcher) {
                 val result: String = client.get {
@@ -46,13 +44,28 @@ class SlackApi(val clientId: String, val clientSecret: String) {
             }
         }
     }
+    fun onRedirectCodeReceived(url: String,callback: () -> Unit) {
+        val code = Url(url).parameters["code"]
+        val address =
+            Url("${slackApiBaseUrl}oauth.access?client_id=$clientId&scope=$scope&redirect_uri=$redirectUrl&client_secret=$clientSecret&code=$code")
+        GlobalScope.apply {
+            launch(ApplicationDispatcher) {
+                val result: String = client.get {
+                    url(address.toString())
+                }
+                //this is a hack. Will probably break soon.s
+                token = result.split(",")[1].split("\"")[3].trim('"')
+                callback()
+            }
+        }
+    }
 
     private var token: String? = null
 
     fun setState(
         state: String,
-        callback: (String) -> Unit,
-        emoji: String
+        emoji: String,
+        callback: (String) -> Unit
     ) {
         val address = Url(slackApiBaseUrl + "/users.profile.set")
 
@@ -75,20 +88,7 @@ class SlackApi(val clientId: String, val clientSecret: String) {
             }
         }
     }
-
-    fun onRedirectCodeReceived(url: String) {
-        val code = Url(url).parameters["code"]
-        val address =
-            Url("${slackApiBaseUrl}oauth.access?client_id=$clientId&scope=$scope&redirect_uri=$callback&client_secret=$clientSecret&code=$code")
-        GlobalScope.apply {
-            launch(ApplicationDispatcher) {
-                val result: String = client.get {
-                    url(address.toString())
-                }
-                token = result
-            }
-        }
-    }
 }
 
 private const val slackApiBaseUrl: String = "https://slack.com/api/"
+const val redirectUrl: String = "http://www.test.com"
