@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">States on Steroids</string>
+    <string name="lunch_30_min">Lunch 30 min 🍽</string>
+    <string name="afk_20_min">AFK 20 min ⌨️</string>
+    <string name="steroids">Steroids</string>
 </resources>

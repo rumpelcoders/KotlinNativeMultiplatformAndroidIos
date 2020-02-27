@@ -1,5 +1,7 @@
 package com.jarhoax.multiplatform.core
 
+import com.soywiz.klock.DateTime
+import com.soywiz.klock.TimeSpan
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -69,9 +71,12 @@ class SlackApi(apiPropertiesString: String, private var token: String?) {
     fun setState(
         state: String,
         emoji: String,
+        duration: Int = 0,
         callback: (String) -> Unit
     ) {
-        val address = Url(slackApiBaseUrl + "/users.profile.set")
+        val address = Url("${slackApiBaseUrl}/users.profile.set")
+
+        val expirationDateTime = if (duration <= 0) 0 else (DateTime.nowUnixLong() / 1000) + (duration * 60)
 
         GlobalScope.apply {
             launch(ApplicationDispatcher) {
@@ -84,7 +89,7 @@ class SlackApi(apiPropertiesString: String, private var token: String?) {
                                 "profile": {
                                     "status_text": "$state",
                                     "status_emoji": "$emoji",
-                                    "status_expiration": 0
+                                    "status_expiration": $expirationDateTime
                                 }
                             }"""
                 }

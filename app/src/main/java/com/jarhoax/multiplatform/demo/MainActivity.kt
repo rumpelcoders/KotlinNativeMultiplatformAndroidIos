@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import com.jarhoax.multiplatform.core.SlackApi
 import com.jarhoax.multiplatform.core.redirectUrl
 import com.jarhoax.multiplatform.demo.util.assetJsonString
@@ -17,13 +18,15 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var slackApi: SlackApi
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val apiProperties = assetJsonString(applicationContext)
         val token: String? = null // TODO load token from file
-        val slackApi = SlackApi(apiProperties, token)
+        slackApi = SlackApi(apiProperties, token)
 
         if (token.isNullOrEmpty()) {
             authorize(slackApi)
@@ -32,6 +35,8 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun authorize(slackApi: SlackApi) {
+        web_view.visibility = View.VISIBLE
+
         slackApi.authorize {
             GlobalScope.apply {
                 launch(Dispatchers.Main) {
@@ -60,5 +65,32 @@ class MainActivity : AppCompatActivity() {
     private fun swapViews() {
         web_view.visibility = View.GONE
         main_text.text = "You are authenticated 🍺"
+    }
+
+    fun onLunchButtonClicked(view: View) {
+        // TODO: add state handling
+        slackApi.setState("@ lunch", ":knife_fork_plate:", 5) {
+            GlobalScope.apply {
+                launch(Dispatchers.Main) {
+                    Log.d(MainActivity::class.java.simpleName, "IT: $it")
+                    Toast
+                        .makeText(this@MainActivity, "State set successfully!", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+    }
+
+    fun onAfkButtonClicked(view: View) {
+        // TODO: add state handling
+        slackApi.setState("AFK", ":keyboard:", 1) {
+            GlobalScope.apply {
+                launch(Dispatchers.Main) {
+                    Toast
+                        .makeText(this@MainActivity, "State set successfully!", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
     }
 }

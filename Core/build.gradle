@@ -37,6 +37,7 @@ kotlin {
             implementation("io.ktor:ktor-client-core:${rootProject.ext.ktor_version}")
             implementation("io.ktor:ktor-client-json-native:${rootProject.ext.ktor_version}")
             implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${rootProject.ext.serializer_version}"
+            implementation "com.soywiz.korlibs.klock:klock:1.7.3"
         }
 
         androidMain.dependencies {
