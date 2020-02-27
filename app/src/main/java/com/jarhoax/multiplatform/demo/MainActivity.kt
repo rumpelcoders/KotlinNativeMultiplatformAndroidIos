@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity() {
                                 swapViews()
 
                                 slackApi.onRedirectCodeReceived(url) {
+                                    slackApi.readState {
+                                        Log.d(MainActivity::class.java.simpleName,it.toString())
+                                    }
                                     Log.d(MainActivity::class.java.simpleName, "Authenticated!")
                                 }
 

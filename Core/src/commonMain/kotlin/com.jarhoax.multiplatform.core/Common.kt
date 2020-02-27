@@ -68,38 +68,47 @@ class SlackApi(apiPropertiesString: String, private var token: String?) {
         }
     }
 
+    fun readState(callback: (SlackState) -> Unit) {
+        val address = Url("${slackApiBaseUrl}/users.profile.get")
+        GlobalScope.apply {
+            launch(ApplicationDispatcher) {
+                val result: String = client.get {
+                    url(address.toString())
+                    header("Authorization", "Bearer $token")
+                }
+                val state = Json.nonstrict.parse(Profile.serializer(), result)
+                callback(state.profile)
+            }
+        }
+    }
+
     fun setState(
         state: String,
         emoji: String,
         duration: Int = 0,
-        callback: (String) -> Unit
+        callback: (SlackState) -> Unit
     ) {
         val address = Url("${slackApiBaseUrl}/users.profile.set")
 
         val expirationDateTime = if (duration <= 0) 0 else (DateTime.nowUnixLong() / 1000) + (duration * 60)
 
+        val b = Json.stringify(Profile.serializer(), Profile(SlackState(state,emoji,expirationDateTime)))
         GlobalScope.apply {
             launch(ApplicationDispatcher) {
                 val result: String = client.post {
                     url(address.toString())
                     header("Authorization", "Bearer $token")
                     contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    body = """
-                            {
-                                "profile": {
-                                    "status_text": "$state",
-                                    "status_emoji": "$emoji",
-                                    "status_expiration": $expirationDateTime
-                                }
-                            }"""
+                    body = b
                 }
-                callback(result)
+                val state = Json.nonstrict.parse(Profile.serializer(), result)
+                callback(state.profile)
             }
         }
     }
 }
 
-fun SlackApi.clearState(callback: (String) -> Unit){ this.setState("","", 0, callback)}
+fun SlackApi.clearState(callback: (SlackState) -> Unit){ this.setState("","", 0, callback)}
 
 private const val slackApiBaseUrl: String = "https://slack.com/api/"
 const val redirectUrl: String = "http://www.test.com"
