@@ -1,6 +1,6 @@
 package com.jarhoax.multiplatform.core.test
 
-import com.jarhoax.multiplatform.core.ExampleApi
+import ExampleApi
 import com.jarhoax.multiplatform.core.test.framework.TestResult
 import com.jarhoax.multiplatform.core.test.framework.TestSuite
 

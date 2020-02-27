@@ -22,7 +22,12 @@ android {
 kotlin {
     targets {
         fromPreset(presets.android, 'android')
-        fromPreset(presets.iosArm64, 'iosArm64')
+
+        // iPhone simulator    : presets.iosX64
+        // real iDevice 32 bit : presets.iosArm32
+        // real iDevice 64 bit : presets.iosArm64
+        def iosPreset = presets.iosX64
+        fromPreset(iosPreset, 'ios')
     }
 
     sourceSets {
