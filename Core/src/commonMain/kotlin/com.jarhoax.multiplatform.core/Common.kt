@@ -13,20 +13,27 @@ import io.ktor.utils.io.charsets.Charsets
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.json.Json
 
 internal expect val ApplicationDispatcher: CoroutineDispatcher
 
-class SlackApi(val clientId: String, val clientSecret: String) {
+class SlackApi(apiPropertiesString: String, private var token: String?) {
 
-    private val client = HttpClient {
+    @UnstableDefault
+    private val apiProperties: ApiProperties =
+        Json.plain.parse(ApiProperties.serializer(), apiPropertiesString)
 
-    }
-
+    private val client = HttpClient()
     private val scope = "users.profile:write"
 
     fun authorize(callback: (String) -> Unit) {
         val address =
-            Url("https://slack.com/oauth/authorize?client_id=$clientId&scope=$scope&redirect_uri=$redirectUrl")
+            Url(
+                "https://slack.com/oauth/authorize?client_id=${apiProperties.clientId}" +
+                        "&scope=$scope" +
+                        "&redirect_uri=$redirectUrl"
+            )
         GlobalScope.apply {
             launch(ApplicationDispatcher) {
                 val result: String = client.get {
@@ -36,23 +43,28 @@ class SlackApi(val clientId: String, val clientSecret: String) {
             }
         }
     }
-    fun onRedirectCodeReceived(url: String,callback: () -> Unit) {
+
+    fun onRedirectCodeReceived(url: String, callback: () -> Unit) {
         val code = Url(url).parameters["code"]
         val address =
-            Url("${slackApiBaseUrl}oauth.access?client_id=$clientId&scope=$scope&redirect_uri=$redirectUrl&client_secret=$clientSecret&code=$code")
+            Url(
+                "${slackApiBaseUrl}oauth.access?client_id=${apiProperties.clientId}" +
+                        "&scope=$scope" +
+                        "&redirect_uri=$redirectUrl" +
+                        "&client_secret=${apiProperties.clientSecret}" +
+                        "&code=$code"
+            )
         GlobalScope.apply {
             launch(ApplicationDispatcher) {
                 val result: String = client.get {
                     url(address.toString())
                 }
-                //this is a hack. Will probably break soon.s
+                //this is a hack (athon). Will probably break soon.s
                 token = result.split(",")[1].split("\"")[3].trim('"')
                 callback()
             }
         }
     }
-
-    private var token: String? = null
 
     fun setState(
         state: String,
@@ -68,13 +80,13 @@ class SlackApi(val clientId: String, val clientSecret: String) {
                     header("Authorization", "Bearer $token")
                     contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                     body = """
-{
-    "profile": {
-        "status_text": "$state",
-        "status_emoji": "$emoji",
-        "status_expiration": 0
-    }
-}"""
+                            {
+                                "profile": {
+                                    "status_text": "$state",
+                                    "status_emoji": "$emoji",
+                                    "status_expiration": 0
+                                }
+                            }"""
                 }
                 callback(result)
             }

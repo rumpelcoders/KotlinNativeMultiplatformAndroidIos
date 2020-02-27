@@ -10,3 +10,4 @@
 /captures
 .externalNativeBuild
 xcuserdata
+app/src/main/assets/properties.json
