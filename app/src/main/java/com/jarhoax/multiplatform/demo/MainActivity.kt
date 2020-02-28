@@ -8,9 +8,11 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.jarhoax.multiplatform.core.FileManager
 import com.jarhoax.multiplatform.core.SlackApi
+import com.jarhoax.multiplatform.core.model.SlackState
 import com.jarhoax.multiplatform.core.redirectUrl
 import com.jarhoax.multiplatform.demo.util.assetJsonString
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,7 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AddEntryDialogListener {
 
     lateinit var slackApi: SlackApi
 
@@ -31,13 +33,15 @@ class MainActivity : AppCompatActivity() {
         val apiProperties = assetJsonString(applicationContext)
         slackApi = SlackApi(apiProperties)
 
+        list_view.adapter = ArrayAdapter<SlackState>(this,R.layout.dialog_add_entry)
+
         authorize(slackApi)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun authorize(slackApi: SlackApi) {
         web_view.visibility = View.VISIBLE
-        val pd = ProgressDialog.show(this@MainActivity, "", "Loading...",true);
+        //val pd = ProgressDialog.show(this@MainActivity, "", getString(R.string.loading),true);
         slackApi.authorize { result ->
             GlobalScope.apply {
                 launch(Dispatchers.Main) {
@@ -50,9 +54,7 @@ class MainActivity : AppCompatActivity() {
                                 view: WebView?,
                                 url: String?
                             ) {
-                                if (pd != null && pd.isShowing) {
-                                    pd.dismiss()
-                                }
+                          //
                             }
                             override fun shouldOverrideUrlLoading(
                                 view: WebView,
@@ -114,5 +116,9 @@ class MainActivity : AppCompatActivity() {
     fun onAddButtonClicked(view: View) {
         val newFragment = AddEntryDialogFragment.newInstance()
         newFragment.show(supportFragmentManager, "add_entry")
+    }
+
+    override fun addEntry(entry: SlackState) {
+        //todo add entry
     }
 }
