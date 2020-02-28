@@ -42,6 +42,7 @@ class SlackApi(apiPropertiesString: String) {
                 Json.plain.parse(Token.serializer(), it).let { token ->
                     this.token = token
                     callback("ok")
+                    return@authorize
                 }
             }
         }
