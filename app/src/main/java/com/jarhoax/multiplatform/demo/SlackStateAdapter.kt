@@ -39,6 +39,7 @@ class SlackStateAdapter(
         val emoji = try {
             context.getString(resId)
         } catch (e: Exception) {
+            state.statusEmoji
         }
         holder.button.text = "${state.statusText} $emoji ${state.statusExpiration}min"
         holder.button.setOnClickListener { holder.clickListener.onStateClicked(state) }
