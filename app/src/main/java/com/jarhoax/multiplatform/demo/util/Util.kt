@@ -1,6 +1,7 @@
 package com.jarhoax.multiplatform.demo.util
 
 import android.content.Context
+import com.jarhoax.multiplatform.core.model.SlackState
 import java.io.IOException
 
 fun assetJsonString(context: Context): String {
@@ -16,5 +17,9 @@ fun assetJsonString(context: Context): String {
     }
 
     return json
+}
+
+interface SlackStateClickListener {
+    fun onStateClicked(state: SlackState)
 }
 

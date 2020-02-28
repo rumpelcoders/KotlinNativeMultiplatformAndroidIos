@@ -7,7 +7,6 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import com.jarhoax.multiplatform.core.model.SlackState
-import kotlinx.android.synthetic.main.dialog_add_entry.*
 import kotlinx.android.synthetic.main.dialog_add_entry.view.*
 
 /**
@@ -18,10 +17,6 @@ import kotlinx.android.synthetic.main.dialog_add_entry.view.*
 class AddEntryDialogFragment : DialogFragment() {
 
     private lateinit var listener: AddEntryDialogListener
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -72,7 +67,6 @@ class AddEntryDialogFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-            AddEntryDialogFragment()
+        fun newInstance() = AddEntryDialogFragment()
     }
 }

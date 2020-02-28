@@ -6,43 +6,6 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-    <TextView
-            android:id="@+id/main_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:text="@string/steroids"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.25" />
-
-    <Button
-            android:id="@+id/btn_lunch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onLunchButtonClicked"
-            android:text="@string/lunch_30_min"
-            app:layout_constraintEnd_toStartOf="@+id/btn_afk"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_afk" />
-
-    <Button
-            android:id="@+id/btn_afk"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:onClick="onAfkButtonClicked"
-            android:text="@string/afk_20_min"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn_lunch"
-            app:layout_constraintTop_toBottomOf="@+id/main_text" />
-
     <ListView
             android:id="@+id/list_view"
             android:layout_width="match_parent"
@@ -51,20 +14,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-    </ListView>
+            app:layout_constraintTop_toTopOf="parent" />
+
     <WebView
             android:id="@+id/web_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:elevation="2dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
-
-    </WebView>
+            app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -73,9 +34,9 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
+            android:onClick="onAddButtonClicked"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_add_white_24dp"
-            android:onClick="onAddButtonClicked"/>
+            app:srcCompat="@drawable/ic_add_white_24dp" />
 
 </android.support.constraint.ConstraintLayout>
