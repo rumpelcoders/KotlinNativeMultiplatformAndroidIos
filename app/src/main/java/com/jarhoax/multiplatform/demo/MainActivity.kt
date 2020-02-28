@@ -9,10 +9,8 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import com.jarhoax.multiplatform.core.FileManager
-import com.jarhoax.multiplatform.core.SlackApi
+import com.jarhoax.multiplatform.core.*
 import com.jarhoax.multiplatform.core.model.SlackState
-import com.jarhoax.multiplatform.core.redirectUrl
 import com.jarhoax.multiplatform.demo.util.SlackStateClickListener
 import com.jarhoax.multiplatform.demo.util.assetJsonString
 import kotlinx.android.synthetic.main.activity_main.*
@@ -35,7 +33,10 @@ class MainActivity : AppCompatActivity(), AddEntryDialogListener, SlackStateClic
         val apiProperties = assetJsonString(applicationContext)
         slackApi = SlackApi(apiProperties)
 
-        initDefaultStates()
+        slackStates.addAll(loadStates())
+        if (slackStates.isEmpty()) {
+            initDefaultStates()
+        }
         list_view.adapter = SlackStateAdapter(this, slackStates, this)
 
         authorize(slackApi)
@@ -112,6 +113,8 @@ class MainActivity : AppCompatActivity(), AddEntryDialogListener, SlackStateClic
     override fun addEntry(entry: SlackState) {
         slackStates.add(entry)
         (list_view.adapter as SlackStateAdapter).notifyDataSetChanged()
+        saveStates(slackStates)
+
     }
 
     override fun onStateClicked(state: SlackState) {
