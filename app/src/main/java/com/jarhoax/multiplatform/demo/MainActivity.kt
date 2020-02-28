@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), AddEntryDialogListener {
     @SuppressLint("SetJavaScriptEnabled")
     private fun authorize(slackApi: SlackApi) {
         web_view.visibility = View.VISIBLE
-        //val pd = ProgressDialog.show(this@MainActivity, "", getString(R.string.loading),true);
+        val pd = ProgressDialog.show(this@MainActivity, "", getString(R.string.loading),true);
         slackApi.authorize { result ->
             GlobalScope.apply {
                 launch(Dispatchers.Main) {
@@ -54,7 +54,9 @@ class MainActivity : AppCompatActivity(), AddEntryDialogListener {
                                 view: WebView?,
                                 url: String?
                             ) {
-                          //
+                                if (pd != null && pd.isShowing) {
+                                    pd.dismiss()
+                                }
                             }
                             override fun shouldOverrideUrlLoading(
                                 view: WebView,
