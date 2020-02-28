@@ -3,4 +3,12 @@
     <string name="lunch_30_min">Lunch 30 min 🍽</string>
     <string name="afk_20_min">AFK 20 min ⌨️</string>
     <string name="steroids">Steroids</string>
+    <string name="state">State</string>
+    <string name="emoji">Emoji</string>
+    <string name="duration_min">Duration (min)</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
 </resources>

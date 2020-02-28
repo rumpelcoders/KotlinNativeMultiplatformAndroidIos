@@ -1,6 +1,7 @@
 package com.jarhoax.multiplatform.demo
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun authorize(slackApi: SlackApi) {
         web_view.visibility = View.VISIBLE
-
+        val pd = ProgressDialog.show(this@MainActivity, "", "Loading...",true);
         slackApi.authorize { result ->
             GlobalScope.apply {
                 launch(Dispatchers.Main) {
@@ -45,6 +46,14 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         web_view.settings.javaScriptEnabled = true;
                         web_view.webViewClient = object : WebViewClient() {
+                            override fun onPageFinished(
+                                view: WebView?,
+                                url: String?
+                            ) {
+                                if (pd != null && pd.isShowing) {
+                                    pd.dismiss()
+                                }
+                            }
                             override fun shouldOverrideUrlLoading(
                                 view: WebView,
                                 url: String
@@ -100,5 +109,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun onAddButtonClicked(view: View) {
+        val newFragment = AddEntryDialogFragment.newInstance()
+        newFragment.show(supportFragmentManager, "add_entry")
     }
 }
