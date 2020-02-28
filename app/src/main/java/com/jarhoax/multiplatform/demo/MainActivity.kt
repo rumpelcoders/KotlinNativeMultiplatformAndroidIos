@@ -11,9 +11,6 @@ import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.Toast
 import com.jarhoax.multiplatform.core.*
-||||||| merged common ancestors
-import com.jarhoax.multiplatform.core.FileManager
-import com.jarhoax.multiplatform.core.SlackApi
 import com.jarhoax.multiplatform.core.model.SlackState
 import com.jarhoax.multiplatform.demo.util.SlackStateClickListener
 import com.jarhoax.multiplatform.demo.util.assetJsonString
