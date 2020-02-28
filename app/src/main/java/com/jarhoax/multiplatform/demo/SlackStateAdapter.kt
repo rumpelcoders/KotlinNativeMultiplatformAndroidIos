@@ -29,7 +29,15 @@ class SlackStateAdapter(
         val holder = view!!.tag as StateViewHolder
         val state = getItem(position) ?: return view
 
-        holder.button.text = "${state.statusText} ${state.statusEmoji} ${state.statusExpiration}min"
+        val packageName: String = context.packageName
+        val resId: Int = context.resources.getIdentifier(
+            state.statusEmoji.replace(":", ""),
+            "string",
+            packageName
+        )
+
+        val emoji = context.getString(resId)
+        holder.button.text = "${state.statusText} $emoji ${state.statusExpiration}min"
         holder.button.setOnClickListener { holder.clickListener.onStateClicked(state) }
 
         return view

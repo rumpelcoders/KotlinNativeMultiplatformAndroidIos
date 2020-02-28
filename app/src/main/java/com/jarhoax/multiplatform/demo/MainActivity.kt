@@ -8,8 +8,12 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
 import android.widget.Toast
 import com.jarhoax.multiplatform.core.*
+||||||| merged common ancestors
+import com.jarhoax.multiplatform.core.FileManager
+import com.jarhoax.multiplatform.core.SlackApi
 import com.jarhoax.multiplatform.core.model.SlackState
 import com.jarhoax.multiplatform.demo.util.SlackStateClickListener
 import com.jarhoax.multiplatform.demo.util.assetJsonString
@@ -33,10 +37,15 @@ class MainActivity : AppCompatActivity(), AddEntryDialogListener, SlackStateClic
         val apiProperties = assetJsonString(applicationContext)
         slackApi = SlackApi(apiProperties)
 
+        val clearStateButton = btn_clear_state.findViewById<Button>(R.id.btn_state)
+        clearStateButton.text = "Clear state"
+        clearStateButton.setOnClickListener { onClearButtonPressed() }
+
         slackStates.addAll(loadStates())
         if (slackStates.isEmpty()) {
             initDefaultStates()
         }
+
         list_view.adapter = SlackStateAdapter(this, slackStates, this)
 
         authorize(slackApi)
@@ -110,6 +119,13 @@ class MainActivity : AppCompatActivity(), AddEntryDialogListener, SlackStateClic
         newFragment.show(supportFragmentManager, "add_entry")
     }
 
+    private fun onClearButtonPressed() {
+        slackApi.clearState {
+            Log.d(MainActivity::class.java.simpleName, "IT: $it")
+            postToast("State cleared!")
+        }
+    }
+
     override fun addEntry(entry: SlackState) {
         slackStates.add(entry)
         (list_view.adapter as SlackStateAdapter).notifyDataSetChanged()
@@ -124,15 +140,17 @@ class MainActivity : AppCompatActivity(), AddEntryDialogListener, SlackStateClic
     private fun setState(slackState: SlackState) {
         slackApi.setState(
             slackState.statusText, slackState.statusEmoji,
-            slackState.statusExpiration.toInt() // actually we would need a different model here, because of min vs. unix time
+            slackState.statusExpiration.toInt() // TODO: actually we would need a different model here, because of min vs. unix time
         ) {
-            GlobalScope.apply {
-                launch(Dispatchers.Main) {
-                    Log.d(MainActivity::class.java.simpleName, "IT: $it")
-                    Toast
-                        .makeText(this@MainActivity, "State set successfully!", Toast.LENGTH_LONG)
-                        .show()
-                }
+            Log.d(MainActivity::class.java.simpleName, "IT: $it")
+            postToast("State set successfully!")
+        }
+    }
+
+    private fun postToast(text: String) {
+        GlobalScope.apply {
+            launch(Dispatchers.Main) {
+                Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
             }
         }
     }
