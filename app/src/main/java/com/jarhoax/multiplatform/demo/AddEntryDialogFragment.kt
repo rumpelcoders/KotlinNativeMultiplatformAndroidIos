@@ -37,11 +37,11 @@ class AddEntryDialogFragment : DialogFragment() {
             // Pass null as the parent view because its going in the dialog layout
             val view = inflater.inflate(R.layout.dialog_add_entry, null)
 
-            val passedStatusText = arguments!!.getString(statusText, "")
+            val passedStatusText = arguments?.getString(statusText)?:""
             view.state_text.setText(passedStatusText)
-            view.state_emoji.setText(arguments!!.getString(statusEmoji,""))
-            view.state_duration.setText(arguments!!.getLong(statusExpiration,0).toString())
-            val isNewState = passedStatusText.isNullOrBlank()
+            view.state_emoji.setText(arguments?.getString(statusEmoji)?:"")
+            view.state_duration.setText((arguments?.getLong(statusExpiration)?:0).toString())
+            val isNewState = passedStatusText.isBlank()
             if (isNewState){
                 builder.setView(view)
                     // Add action buttons
