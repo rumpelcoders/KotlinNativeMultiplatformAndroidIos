@@ -130,8 +130,30 @@ class MainActivity : AppCompatActivity(), AddEntryDialogListener, SlackStateClic
 
     }
 
+    override fun saveEntry(state: SlackState) {
+        val first = slackStates.first { it -> it.statusText == state.statusText }
+        val indexOf = slackStates.indexOf(first)
+        slackStates.remove(first)
+        slackStates.add(indexOf, state)
+        (list_view.adapter as SlackStateAdapter).notifyDataSetChanged()
+        saveStates(slackStates)
+    }
+
+    override fun deleteEntry(stateText: String) {
+        val first = slackStates.first { it -> it.statusText == stateText }
+        val indexOf = slackStates.indexOf(first)
+        slackStates.remove(first)
+        (list_view.adapter as SlackStateAdapter).notifyDataSetChanged()
+        saveStates(slackStates)
+    }
+
     override fun onStateClicked(state: SlackState) {
         setState(state)
+    }
+
+    override fun onStateLongClicked(state: SlackState) {
+        val newFragment = AddEntryDialogFragment.newInstance(state)
+        newFragment.show(supportFragmentManager, "add_entry")
     }
 
     private fun setState(slackState: SlackState) {

@@ -43,6 +43,12 @@ class SlackStateAdapter(
         }
         holder.button.text = "${state.statusText} $emoji ${state.statusExpiration}min"
         holder.button.setOnClickListener { holder.clickListener.onStateClicked(state) }
+        holder.button.setOnLongClickListener {
+            holder.clickListener.onStateLongClicked(state)
+            return@setOnLongClickListener true
+
+        }
+
 
         return view
     }

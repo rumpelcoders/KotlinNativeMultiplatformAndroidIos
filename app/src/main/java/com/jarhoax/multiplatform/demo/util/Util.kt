@@ -21,5 +21,6 @@ fun assetJsonString(context: Context): String {
 
 interface SlackStateClickListener {
     fun onStateClicked(state: SlackState)
+    fun onStateLongClicked(state: SlackState)
 }
 
