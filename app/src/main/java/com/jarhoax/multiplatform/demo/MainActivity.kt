@@ -157,12 +157,16 @@ class MainActivity : AppCompatActivity(), AddEntryDialogListener, SlackStateClic
     }
 
     private fun setState(slackState: SlackState) {
-        slackApi.setState(
-            slackState.statusText, slackState.statusEmoji,
-            slackState.statusExpiration.toInt() // TODO: actually we would need a different model here, because of min vs. unix time
-        ) {
-            Log.d(MainActivity::class.java.simpleName, "IT: $it")
-            postToast("State set successfully!")
+        try {
+            slackApi.setState(
+                slackState.statusText, slackState.statusEmoji,
+                slackState.statusExpiration.toInt() // TODO: actually we would need a different model here, because of min vs. unix time
+            ) {
+                Log.d(MainActivity::class.java.simpleName, "IT: $it")
+                postToast("State set successfully!")
+            }
+        } catch (e: Exception) {
+            postToast("Error on setting state.")
         }
     }
 
