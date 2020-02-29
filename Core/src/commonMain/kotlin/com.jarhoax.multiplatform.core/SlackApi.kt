@@ -134,8 +134,12 @@ class SlackApi(apiPropertiesString: String) {
                     contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                     body = b
                 }
-                val profile = Json.nonstrict.parse(Profile.serializer(), result)
-                callback(profile.state)
+                try {
+                    val profile = Json.nonstrict.parse(Profile.serializer(), result)
+                    callback(profile.state)
+                } catch (e: Exception) {
+                    callback(SlackState("error"))
+                }
             }
         }
     }

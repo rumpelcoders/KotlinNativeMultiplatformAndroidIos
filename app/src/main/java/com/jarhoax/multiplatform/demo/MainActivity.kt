@@ -157,16 +157,16 @@ class MainActivity : AppCompatActivity(), AddEntryDialogListener, SlackStateClic
     }
 
     private fun setState(slackState: SlackState) {
-        try {
-            slackApi.setState(
-                slackState.statusText, slackState.statusEmoji,
-                slackState.statusExpiration.toInt() // TODO: actually we would need a different model here, because of min vs. unix time
-            ) {
-                Log.d(MainActivity::class.java.simpleName, "IT: $it")
+        slackApi.setState(
+            slackState.statusText, slackState.statusEmoji,
+            slackState.statusExpiration.toInt() // TODO: actually we would need a different model here, because of min vs. unix time
+        ) {
+            Log.d(MainActivity::class.java.simpleName, "IT: $it")
+            if (it.statusText == "error") {
+                postToast("Unable to set state. Maybe the emoji does not exist?")
+            }else{
                 postToast("State set successfully!")
             }
-        } catch (e: Exception) {
-            postToast("Error on setting state.")
         }
     }
 
