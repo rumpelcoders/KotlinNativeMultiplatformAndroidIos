@@ -9,7 +9,7 @@ android {
     }
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.jarhoax.multiplatform.demo"
+        applicationId "com.rumpel.mpp.com.rumpel.mpp.com.rumpel.mpp.statesonsteroids"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

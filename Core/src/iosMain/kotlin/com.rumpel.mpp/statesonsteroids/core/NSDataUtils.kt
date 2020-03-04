@@ -1,0 +1,26 @@
+package com.rumpel.mpp.statesonsteroids.core
+
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.readBytes
+import kotlinx.cinterop.usePinned
+import platform.Foundation.NSData
+import platform.Foundation.dataWithBytes
+
+@UseExperimental(ExperimentalUnsignedTypes::class)
+fun NSData.toByteArray(): ByteArray? {
+    if (bytes == null) {
+        return null
+    }
+    return bytes!!.readBytes(length.toInt())
+}
+
+@UseExperimental(ExperimentalUnsignedTypes::class)
+fun ByteArray.toNSData(): NSData? {
+    if (isEmpty()) {
+        return null
+    }
+
+    return usePinned {
+        return@usePinned NSData.dataWithBytes(it.addressOf(0), it.get().size.toULong())
+    }
+}
