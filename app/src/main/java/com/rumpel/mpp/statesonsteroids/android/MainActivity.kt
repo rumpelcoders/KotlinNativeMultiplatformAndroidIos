@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun onClearButtonPressed() {
         slackApi.clearState {
-            Log.d(MainActivity::class.java.simpleName, "IT: $it")
+            log("IT: $it")
             getString(R.string.state_cleared).postAsToast()
         }
     }
@@ -139,10 +139,11 @@ class MainActivity : AppCompatActivity(),
 
     private fun SlackState.set() {
         slackApi.setState(
-            statusText, statusEmoji,
+            statusText,
+            statusEmoji,
             statusExpiration.toInt() // TODO: actually we would need a different model here, because of min vs. unix time
         ) {
-            Log.d(MainActivity::class.java.simpleName, "IT: $it")
+            log("IT: $it")
             if (it.statusText == "error") {
                 getString(R.string.unable_to_set_state).postAsToast()
             } else {
@@ -177,4 +178,7 @@ class MainActivity : AppCompatActivity(),
     }
 }
 
+private fun log(text: String) {
+    Log.d(MainActivity::class.java.simpleName, text)
+}
 
