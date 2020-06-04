@@ -23,5 +23,9 @@
     <string name="state_cleared">State cleared!</string>
     <string name="unable_to_set_state">Unable to set state. Maybe the emoji does not exist?</string>
     <string name="state_set">State set successfully!</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 
 </resources>

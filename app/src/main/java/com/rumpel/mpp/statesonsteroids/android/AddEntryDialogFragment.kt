@@ -91,28 +91,12 @@ class AddEntryDialogFragment : DialogFragment() {
         )
     }
 
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            listener = context as AddEntryDialogListener
-        } catch (e: ClassCastException) {
-            // The activity doesn't implement the interface, throw exception
-            throw ClassCastException(
-                (context.toString() +
-                        " must implement NoticeDialogListener")
-            )
-        }
-    }
-
     companion object {
-        @JvmStatic
-        fun newInstance(state: SlackState? = null): AddEntryDialogFragment {
+        fun newInstance(listener: AddEntryDialogListener, state: SlackState? = null): AddEntryDialogFragment {
             val addEntryDialogFragment =
                 AddEntryDialogFragment()
             val args = Bundle()
+            addEntryDialogFragment.listener = listener
             state?.let {
                 args.putString(statusText, state.statusText)
                 args.putString(statusEmoji, state.statusEmoji)
