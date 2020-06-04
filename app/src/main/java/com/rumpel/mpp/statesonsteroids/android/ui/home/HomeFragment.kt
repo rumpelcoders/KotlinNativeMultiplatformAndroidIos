@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +13,8 @@ import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.rumpel.mpp.statesonsteroids.android.AddEntryDialogFragment
 import com.rumpel.mpp.statesonsteroids.android.AddEntryDialogListener
 import com.rumpel.mpp.statesonsteroids.android.R

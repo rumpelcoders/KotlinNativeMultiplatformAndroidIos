@@ -1,12 +1,11 @@
 package com.rumpel.mpp.statesonsteroids.android
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import com.rumpel.mpp.statesonsteroids.core.model.SlackState
 import kotlinx.android.synthetic.main.dialog_add_entry.view.*
 
@@ -54,7 +53,7 @@ class AddEntryDialogFragment : DialogFragment() {
                     .setNegativeButton(
                         R.string.cancel
                     ) { _, _ ->
-                        dialog.cancel()
+                        dialog?.cancel()
                     }
             } else {
                 view.state_text.isEnabled = false
@@ -70,7 +69,7 @@ class AddEntryDialogFragment : DialogFragment() {
                     .setNegativeButton(
                         R.string.cancel
                     ) { _, _ ->
-                        dialog.cancel()
+                        dialog?.cancel()
                     }
                     .setNeutralButton("Delete") { _, _ ->
                         listener.deleteEntry(
