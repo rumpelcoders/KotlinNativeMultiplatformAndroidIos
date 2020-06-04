@@ -136,16 +136,16 @@ class MainActivity : AppCompatActivity(),
         saveStates(slackStates)
     }
 
-    override fun onStateClicked(state: SlackState) = setState(state)
+    override fun onStateClicked(state: SlackState) = state.set()
 
     override fun onStateLongClicked(state: SlackState) {
         AddEntryDialogFragment.newInstance(state).show(supportFragmentManager, "add_entry")
     }
 
-    private fun setState(slackState: SlackState) {
+    private fun SlackState.set() {
         slackApi.setState(
-            slackState.statusText, slackState.statusEmoji,
-            slackState.statusExpiration.toInt() // TODO: actually we would need a different model here, because of min vs. unix time
+            statusText, statusEmoji,
+            statusExpiration.toInt() // TODO: actually we would need a different model here, because of min vs. unix time
         ) {
             Log.d(MainActivity::class.java.simpleName, "IT: $it")
             if (it.statusText == "error") {
