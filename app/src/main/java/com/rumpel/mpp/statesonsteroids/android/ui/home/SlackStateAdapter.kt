@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android
+package com.rumpel.mpp.statesonsteroids.android.ui.home
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
+import com.rumpel.mpp.statesonsteroids.android.R
 import com.rumpel.mpp.statesonsteroids.core.model.SlackState
 import com.rumpel.mpp.statesonsteroids.android.util.SlackStateClickListener
 
@@ -14,7 +15,8 @@ class SlackStateAdapter(
     objects: MutableList<SlackState>,
     private val clickListener: SlackStateClickListener
 ) :
-    ArrayAdapter<SlackState>(context, R.layout.item_slack_state, objects) {
+    ArrayAdapter<SlackState>(context,
+        R.layout.item_slack_state, objects) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view = convertView

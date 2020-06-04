@@ -27,5 +27,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="channel_name">"GeoFence "</string>
+    <string name="channel_description">Channel for geofence updates</string>
 
 </resources>

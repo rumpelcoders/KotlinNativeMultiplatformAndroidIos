@@ -5,17 +5,17 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.GeofencingClient
-import com.google.android.gms.location.GeofencingRequest
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.rumpel.mpp.statesonsteroids.android.R
+import java.util.*
+
 
 class GeofencingFragment : Fragment() {
 
@@ -30,7 +30,17 @@ class GeofencingFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_geofencing, container, false)
         geofencingClient = LocationServices.getGeofencingClient(activity!!)
 
-        geofenceList.add(createGeoFence(GeoFenceData("test", 46.832864, 12.761061, 100.0F)))
+        geofenceList.add(
+            createGeoFence(
+                GeoFenceData(
+                    UUID.randomUUID().toString(),
+                    "S3 Incubator",
+                    46.8328899,
+                    12.7611502,
+                    100.0F
+                )
+            )
+        )
         if (ActivityCompat.checkSelfPermission(
                 activity?.applicationContext!!,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -45,17 +55,47 @@ class GeofencingFragment : Fragment() {
         geofencingClient.addGeofences(getGeofencingRequest(), geofencePendingIntent)?.run {
             addOnSuccessListener {
                 Toast.makeText(context!!, "geofence added", Toast.LENGTH_SHORT).show()
+                val lastLocation = LocationServices.getFusedLocationProviderClient(activity!!)
+                lastLocation.lastLocation.addOnSuccessListener(activity!!) { location ->
+                    if (location != null) {
+                        val wayLatitude = location.latitude
+                        val wayLongitude = location.longitude
+
+                        showNotification(
+                            context!!,
+                            "latitude: $wayLatitude longitude: $wayLongitude",
+                            "Geofence was added. Current location is:",
+                            1
+                        )
+                    }
+                }
             }
             addOnFailureListener {
                 Toast.makeText(context!!, "geofence failed to add", Toast.LENGTH_SHORT).show()
             }
         }
+        val locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                Toast.makeText(context!!, "location updated", Toast.LENGTH_SHORT).show()
+            }
+        }
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+            interval = 20000
+            fastestInterval = 20000
+        }
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
         return root
     }
 
     private fun getGeofencingRequest(): GeofencingRequest {
         return GeofencingRequest.Builder().apply {
-            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL)
+            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
             addGeofences(geofenceList)
         }.build()
     }
@@ -64,7 +104,7 @@ class GeofencingFragment : Fragment() {
         val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
         // addGeofences() and removeGeofences().
-        PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 }
 
@@ -77,14 +117,13 @@ fun createGeoFence(entry: GeoFenceData): Geofence {
             entry.longitude,
             entry.radius
         )
-        .setExpirationDuration(30*60*1000) //30 minutes
-        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_EXIT or Geofence.GEOFENCE_TRANSITION_DWELL)
+        .setExpirationDuration(Geofence.NEVER_EXPIRE)
+        .setLoiteringDelay(3000)
+        .setTransitionTypes(
+            Geofence.GEOFENCE_TRANSITION_EXIT
+                    or Geofence.GEOFENCE_TRANSITION_DWELL
+                    or Geofence.GEOFENCE_TRANSITION_ENTER
+        )
         .build()
 }
 
-data class GeoFenceData(
-    val key: String,
-    val latitude: Double,
-    val longitude: Double,
-    val radius: Float
-)

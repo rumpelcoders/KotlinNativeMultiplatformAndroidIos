@@ -15,10 +15,7 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.rumpel.mpp.statesonsteroids.android.AddEntryDialogFragment
-import com.rumpel.mpp.statesonsteroids.android.AddEntryDialogListener
 import com.rumpel.mpp.statesonsteroids.android.R
-import com.rumpel.mpp.statesonsteroids.android.SlackStateAdapter
 import com.rumpel.mpp.statesonsteroids.android.util.SlackStateClickListener
 import com.rumpel.mpp.statesonsteroids.android.util.assetJsonString
 import com.rumpel.mpp.statesonsteroids.core.*
@@ -30,7 +27,8 @@ import kotlinx.coroutines.launch
 
 private const val addEntryTag: String = "add_entry"
 
-class HomeFragment : Fragment(), AddEntryDialogListener, SlackStateClickListener {
+class HomeFragment : Fragment(),
+    AddEntryDialogListener, SlackStateClickListener {
 
     private lateinit var slackApi: SlackApi
     private var loadingIndicator: ProgressDialog? = null
@@ -63,7 +61,11 @@ class HomeFragment : Fragment(), AddEntryDialogListener, SlackStateClickListener
         }
 
         root.findViewById<ListView>(R.id.list_view).adapter =
-            SlackStateAdapter(applicationContext, slackStates, this)
+            SlackStateAdapter(
+                applicationContext,
+                slackStates,
+                this
+            )
 
         authorize(slackApi)
         return root

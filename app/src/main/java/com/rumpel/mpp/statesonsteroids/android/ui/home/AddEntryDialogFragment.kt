@@ -1,11 +1,11 @@
-package com.rumpel.mpp.statesonsteroids.android
+package com.rumpel.mpp.statesonsteroids.android.ui.home
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
+import com.rumpel.mpp.statesonsteroids.android.R
 import com.rumpel.mpp.statesonsteroids.core.model.SlackState
 import kotlinx.android.synthetic.main.dialog_add_entry.view.*
 

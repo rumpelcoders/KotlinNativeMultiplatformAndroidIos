@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android
+package com.rumpel.mpp.statesonsteroids.android.ui.home
 
 import com.rumpel.mpp.statesonsteroids.core.model.SlackState
 
