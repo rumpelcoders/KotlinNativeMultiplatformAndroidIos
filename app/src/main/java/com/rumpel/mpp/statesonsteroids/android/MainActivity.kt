@@ -153,10 +153,10 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun String.postAsToast() {
+    private fun String.postAsToast(length: Int = Toast.LENGTH_SHORT) {
         GlobalScope.apply {
             launch(Dispatchers.Main) {
-                Toast.makeText(this@MainActivity, this@postAsToast, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, this@postAsToast, length).show()
             }
         }
     }
