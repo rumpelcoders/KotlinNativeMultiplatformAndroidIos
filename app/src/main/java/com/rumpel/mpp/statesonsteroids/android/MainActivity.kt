@@ -1,3 +1,5 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.rumpel.mpp.statesonsteroids.android
 
 import android.annotation.SuppressLint
@@ -10,10 +12,10 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.Toast
-import com.rumpel.mpp.statesonsteroids.core.*
-import com.rumpel.mpp.statesonsteroids.core.model.SlackState
 import com.rumpel.mpp.statesonsteroids.android.util.SlackStateClickListener
 import com.rumpel.mpp.statesonsteroids.android.util.assetJsonString
+import com.rumpel.mpp.statesonsteroids.core.*
+import com.rumpel.mpp.statesonsteroids.core.model.SlackState
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -22,7 +24,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity(),
     AddEntryDialogListener, SlackStateClickListener {
 
-    lateinit var slackApi: SlackApi
+    private lateinit var slackApi: SlackApi
     private var loadingIndicator: ProgressDialog? = null
     private val slackStates = mutableListOf<SlackState>()
 
@@ -65,8 +67,7 @@ class MainActivity : AppCompatActivity(),
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun authorize(slackApi: SlackApi) {
-        loadingIndicator =
-            ProgressDialog.show(this@MainActivity, "", getString(R.string.loading), true);
+        loadingIndicator = ProgressDialog.show(this, "", getString(R.string.loading), true)
         slackApi.authorize { result ->
             GlobalScope.apply {
                 launch(Dispatchers.Main) {
@@ -170,7 +171,7 @@ class MainActivity : AppCompatActivity(),
             Log.d(MainActivity::class.java.simpleName, "IT: $it")
             if (it.statusText == "error") {
                 postToast("Unable to set state. Maybe the emoji does not exist?")
-            }else{
+            } else {
                 postToast("State set successfully!")
             }
         }

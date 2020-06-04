@@ -1,8 +1,8 @@
 package com.rumpel.mpp.statesonsteroids.core
 
 import com.rumpel.mpp.statesonsteroids.core.model.SlackState
+import kotlinx.serialization.builtins.list
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.list
 
 private const val stateFileName = "states.json"
 
