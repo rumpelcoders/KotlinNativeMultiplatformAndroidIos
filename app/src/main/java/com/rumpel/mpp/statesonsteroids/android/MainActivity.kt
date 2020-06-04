@@ -21,6 +21,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+private const val addEntryTag = "add_entry"
+
 class MainActivity : AppCompatActivity(),
     AddEntryDialogListener, SlackStateClickListener {
 
@@ -45,12 +47,7 @@ class MainActivity : AppCompatActivity(),
             slackStates.initDefaultStates()
         }
 
-        list_view.adapter =
-            SlackStateAdapter(
-                this,
-                slackStates,
-                this
-            )
+        list_view.adapter = SlackStateAdapter(this, slackStates, this)
 
         authorize(slackApi)
     }
@@ -101,7 +98,7 @@ class MainActivity : AppCompatActivity(),
 
     fun onAddButtonClicked() {
         val newFragment = AddEntryDialogFragment.newInstance()
-        newFragment.show(supportFragmentManager, "add_entry")
+        newFragment.show(supportFragmentManager, addEntryTag)
     }
 
     private fun onClearButtonPressed() {
@@ -139,7 +136,7 @@ class MainActivity : AppCompatActivity(),
     override fun onStateClicked(state: SlackState) = state.set()
 
     override fun onStateLongClicked(state: SlackState) {
-        AddEntryDialogFragment.newInstance(state).show(supportFragmentManager, "add_entry")
+        AddEntryDialogFragment.newInstance(state).show(supportFragmentManager, addEntryTag)
     }
 
     private fun SlackState.set() {
