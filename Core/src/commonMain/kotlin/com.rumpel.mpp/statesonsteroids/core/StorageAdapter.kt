@@ -1,12 +1,12 @@
 package com.rumpel.mpp.statesonsteroids.core
 
 import com.rumpel.mpp.statesonsteroids.core.model.SlackState
+import kotlinx.serialization.builtins.list
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.list
 
 private const val stateFileName = "states.json"
 
-fun saveStates(slackStates: MutableList<SlackState>){
+fun saveStates(slackStates: MutableList<SlackState>) {
     val filePath =
         buildPath(stateFileName)
     val tokenJson = Json.stringify(SlackState.serializer().list, slackStates)
@@ -15,7 +15,7 @@ fun saveStates(slackStates: MutableList<SlackState>){
     }
 }
 
-fun loadStates() : List<SlackState> {
+fun loadStates(): List<SlackState> {
     val filePath =
         buildPath(stateFileName)
     if (FileManager.exists(filePath)) {

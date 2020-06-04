@@ -31,6 +31,10 @@ class ViewController: UIViewController {
         slackApi.authorize { result in
             if result.isAuthenticated {
                 print("GOOD")
+                // TODO: Do magic views buttons gibihmela
+                self.slackApi.setState(state: "Done for today", emoji: ":beers:", duration: 420) { state in
+                    print ("state set successfully to: \(state.statusText)")
+                }
             } else {
                 print("NOT good")
 
@@ -59,9 +63,6 @@ extension ViewController: WKNavigationDelegate {
             self.slackApi.onRedirectCodeReceived(url: responseUrl!) {
                 print("Success! - Authenticated!")
                 // TODO: swap views
-                self.slackApi.setState(state: "Done for today", emoji: ":oof:", duration: 420) { state in
-                    print ("state set successfully to: \(state.statusText)")
-                }
             }
             return
         }

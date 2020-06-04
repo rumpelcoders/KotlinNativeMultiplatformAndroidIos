@@ -43,7 +43,7 @@ kotlin {
         implementation("io.ktor:ktor-client-core:${rootProject.ext["ktor_version"]}")
         implementation("io.ktor:ktor-client-json-native:${rootProject.ext["ktor_version"]}")
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${rootProject.ext["serializer_version"]}")
-        implementation("com.soywiz.korlibs.klock:klock:1.5.0")
+        implementation("com.soywiz.korlibs.klock:klock:1.11.3")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${rootProject.ext["coroutines_version"]}")
     }
 
