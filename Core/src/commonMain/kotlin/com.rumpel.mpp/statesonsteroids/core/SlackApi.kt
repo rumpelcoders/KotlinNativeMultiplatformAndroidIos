@@ -14,9 +14,9 @@ import io.ktor.http.ContentType
 import io.ktor.http.Url
 import io.ktor.http.contentType
 import io.ktor.http.withCharset
-import io.ktor.utils.io.charsets.Charsets
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.io.charsets.Charsets
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 
