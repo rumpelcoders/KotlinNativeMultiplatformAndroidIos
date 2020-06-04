@@ -61,43 +61,34 @@ class MainActivity : AppCompatActivity(),
         slackApi.authorize { result ->
             GlobalScope.apply {
                 launch(Dispatchers.Main) {
-                    if (result == "ok") {
+                    if (result.isAuthenticated) {
                         swapViews()
                         removeProgressDialog()
                     } else {
                         web_view.visibility = View.VISIBLE
                         web_view.settings.javaScriptEnabled = true;
-                        web_view.webViewClient = object : WebViewClient() {
-                            override fun onPageFinished(
-                                view: WebView?,
-                                url: String?
-                            ) {
-                                removeProgressDialog()
-                            }
-
-                            override fun shouldOverrideUrlLoading(
-                                view: WebView,
-                                url: String
-                            ): Boolean {
-                                if (url.startsWith(redirectUrl)) {
-                                    swapViews()
-
-                                    slackApi.onRedirectCodeReceived(url) {
-                                        Log.d(MainActivity::class.java.simpleName, "Authenticated!")
-                                    }
-
-                                    return true
-                                }
-                                return false
-                            }
-                        }
-
-                        web_view.loadDataWithBaseURL("", result, "text/html", "UTF-8", "")
+                        web_view.webViewClient = createWebViewClient(slackApi)
+                        web_view.loadDataWithBaseURL("", result.content, "text/html", "UTF-8", "")
                     }
                 }
             }
 
         }
+    }
+
+    private fun createWebViewClient(slackApi: SlackApi) = object : WebViewClient() {
+        override fun onPageFinished(view: WebView?, url: String?) = removeProgressDialog()
+
+        override fun shouldOverrideUrlLoading(view: WebView, url: String) =
+            if (url.startsWith(redirectUrl)) {
+                swapViews()
+                slackApi.onRedirectCodeReceived(url) {
+                    Log.d(MainActivity::class.java.simpleName, "Authenticated!")
+                }
+                true
+            } else {
+                false
+            }
     }
 
     private fun removeProgressDialog() {
@@ -108,7 +99,7 @@ class MainActivity : AppCompatActivity(),
         web_view.visibility = View.GONE
     }
 
-    fun onAddButtonClicked(view: View) {
+    fun onAddButtonClicked() {
         val newFragment = AddEntryDialogFragment.newInstance()
         newFragment.show(supportFragmentManager, "add_entry")
     }
@@ -116,7 +107,7 @@ class MainActivity : AppCompatActivity(),
     private fun onClearButtonPressed() {
         slackApi.clearState {
             Log.d(MainActivity::class.java.simpleName, "IT: $it")
-            postToast("State cleared!")
+            getString(R.string.state_cleared).postAsToast()
         }
     }
 
@@ -137,20 +128,18 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun deleteEntry(stateText: String) {
-        val first = slackStates.first { it -> it.statusText == stateText }
-        val indexOf = slackStates.indexOf(first)
+        val first = slackStates.first { it.statusText == stateText }
         slackStates.remove(first)
-        (list_view.adapter as SlackStateAdapter).notifyDataSetChanged()
+        with(list_view.adapter as SlackStateAdapter) {
+            notifyDataSetChanged()
+        }
         saveStates(slackStates)
     }
 
-    override fun onStateClicked(state: SlackState) {
-        setState(state)
-    }
+    override fun onStateClicked(state: SlackState) = setState(state)
 
     override fun onStateLongClicked(state: SlackState) {
-        val newFragment = AddEntryDialogFragment.newInstance(state)
-        newFragment.show(supportFragmentManager, "add_entry")
+        AddEntryDialogFragment.newInstance(state).show(supportFragmentManager, "add_entry")
     }
 
     private fun setState(slackState: SlackState) {
@@ -160,17 +149,17 @@ class MainActivity : AppCompatActivity(),
         ) {
             Log.d(MainActivity::class.java.simpleName, "IT: $it")
             if (it.statusText == "error") {
-                postToast("Unable to set state. Maybe the emoji does not exist?")
+                getString(R.string.unable_to_set_state).postAsToast()
             } else {
-                postToast("State set successfully!")
+                getString(R.string.state_set).postAsToast()
             }
         }
     }
 
-    private fun postToast(text: String) {
+    private fun String.postAsToast() {
         GlobalScope.apply {
             launch(Dispatchers.Main) {
-                Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, this@postAsToast, Toast.LENGTH_SHORT).show()
             }
         }
     }

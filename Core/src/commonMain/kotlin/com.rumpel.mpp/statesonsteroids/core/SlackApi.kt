@@ -36,12 +36,12 @@ class SlackApi(apiPropertiesString: String) {
     private val tokenFilePath =
         FileManager.contentsDirectory.absolutePath?.byAppending("token.json")!!
 
-    fun authorize(callback: (String) -> Unit) {
+    fun authorize(callback: (AuthorizationResult) -> Unit) {
         if (FileManager.exists(tokenFilePath)) {
             FileManager.readFile(tokenFilePath, ContentEncoding.Utf8)?.let {
                 Json.plain.parse(Token.serializer(), it).let { token ->
                     this.token = token
-                    callback("ok")
+                    callback(AuthorizationResult(true))
                     return@authorize
                 }
             }
@@ -58,7 +58,7 @@ class SlackApi(apiPropertiesString: String) {
                 val result: String = client.get {
                     url(address.toString())
                 }
-                callback(result)
+                callback(AuthorizationResult(false, result))
             }
         }
     }
@@ -144,6 +144,8 @@ class SlackApi(apiPropertiesString: String) {
         }
     }
 }
+
+data class AuthorizationResult(val isAuthenticated: Boolean, val content: String? = null)
 
 @UnstableDefault
 fun SlackApi.clearState(callback: (SlackState) -> Unit) = setState("", "", 0, callback)

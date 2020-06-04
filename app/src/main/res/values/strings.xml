@@ -20,5 +20,8 @@
     <string name="sample_emoji_lunch">:knife_fork_plate:</string>
     <string name="sample_state_afk">AFK</string>
     <string name="sample_emoji_afk">:coffee:</string>
+    <string name="state_cleared">State cleared!</string>
+    <string name="unable_to_set_state">Unable to set state. Maybe the emoji does not exist?</string>
+    <string name="state_set">State set successfully!</string>
 
 </resources>
