@@ -145,6 +145,5 @@ class SlackApi(apiPropertiesString: String) {
     }
 }
 
-fun SlackApi.clearState(callback: (SlackState) -> Unit) {
-    this.setState("", "", 0, callback)
-}
+@UnstableDefault
+fun SlackApi.clearState(callback: (SlackState) -> Unit) = setState("", "", 0, callback)

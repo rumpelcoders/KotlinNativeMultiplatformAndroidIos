@@ -34,8 +34,7 @@ class MainActivity : AppCompatActivity(),
 
         FileManager.initialize(applicationContext)
 
-        val apiProperties = assetJsonString(applicationContext)
-        slackApi = SlackApi(apiProperties)
+        slackApi = SlackApi(assetJsonString(applicationContext))
 
         val clearStateButton = btn_clear_state.findViewById<Button>(R.id.btn_state)
         clearStateButton.text = getString(R.string.clear_state)
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity(),
 
         slackStates.addAll(loadStates())
         if (slackStates.isEmpty()) {
-            initDefaultStates()
+            slackStates.initDefaultStates()
         }
 
         list_view.adapter =
@@ -54,23 +53,6 @@ class MainActivity : AppCompatActivity(),
             )
 
         authorize(slackApi)
-    }
-
-    private fun initDefaultStates() {
-        val defaultStates = listOf(
-            SlackState(
-                getString(R.string.sample_state_lunch),
-                getString(R.string.sample_emoji_lunch),
-                30
-            ),
-            SlackState(
-                getString(R.string.sample_state_afk),
-                getString(R.string.sample_emoji_afk),
-                20
-            )
-        )
-
-        slackStates.addAll(defaultStates)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -192,4 +174,23 @@ class MainActivity : AppCompatActivity(),
             }
         }
     }
+
+    private fun MutableList<SlackState>.initDefaultStates() {
+        val defaultStates = listOf(
+            SlackState(
+                getString(R.string.sample_state_lunch),
+                getString(R.string.sample_emoji_lunch),
+                30
+            ),
+            SlackState(
+                getString(R.string.sample_state_afk),
+                getString(R.string.sample_emoji_afk),
+                20
+            )
+        )
+
+        addAll(defaultStates)
+    }
 }
+
+
