@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(),
         slackApi = SlackApi(apiProperties)
 
         val clearStateButton = btn_clear_state.findViewById<Button>(R.id.btn_state)
-        clearStateButton.text = "Clear state"
+        clearStateButton.text = getString(R.string.clear_state)
         clearStateButton.setOnClickListener { onClearButtonPressed() }
 
         slackStates.addAll(loadStates())
@@ -58,8 +58,16 @@ class MainActivity : AppCompatActivity(),
 
     private fun initDefaultStates() {
         val defaultStates = listOf(
-            SlackState("@ lunch", ":knife_fork_plate:", 30),
-            SlackState("AFK", ":coffee:", 20)
+            SlackState(
+                getString(R.string.sample_state_lunch),
+                getString(R.string.sample_emoji_lunch),
+                30
+            ),
+            SlackState(
+                getString(R.string.sample_state_afk),
+                getString(R.string.sample_emoji_afk),
+                20
+            )
         )
 
         slackStates.addAll(defaultStates)

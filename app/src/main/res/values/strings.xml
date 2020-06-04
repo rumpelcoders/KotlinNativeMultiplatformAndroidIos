@@ -15,5 +15,10 @@
     <!-- emojis, find a nice and generic way for adding custom ones -->
     <string name="coffee">☕️</string>
     <string name="knife_fork_plate">🍽</string>
+    <string name="clear_state">Clear state</string>
+    <string name="sample_state_lunch">\@ lunch</string>
+    <string name="sample_emoji_lunch">:knife_fork_plate:</string>
+    <string name="sample_state_afk">AFK</string>
+    <string name="sample_emoji_afk">:coffee:</string>
 
 </resources>
