@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun saveEntry(state: SlackState) {
-        val first = slackStates.first { it -> it.statusText == state.statusText }
+        val first = slackStates.first { it.statusText == state.statusText }
         val indexOf = slackStates.indexOf(first)
         slackStates.remove(first)
         slackStates.add(indexOf, state)
@@ -127,9 +127,7 @@ class MainActivity : AppCompatActivity(),
     override fun deleteEntry(stateText: String) {
         val first = slackStates.first { it.statusText == stateText }
         slackStates.remove(first)
-        with(list_view.adapter as SlackStateAdapter) {
-            notifyDataSetChanged()
-        }
+        (list_view.adapter as SlackStateAdapter).notifyDataSetChanged()
         saveStates(slackStates)
     }
 
