@@ -12,6 +12,7 @@ import Core
 class StateTableViewController: UITableViewController {
 
     var items = [SlackState]()
+    var slackApi: SlackApi!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,12 +41,21 @@ class StateTableViewController: UITableViewController {
 
         // Fetches the appropriate state item for the data source layout.
         let state = items[indexPath.row]
-
         cell.label.text = state.statusText
 
         return cell
     }
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedState = items[indexPath.row]
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        slackApi.setState(state: selectedState.statusText, emoji: selectedState.statusEmoji, duration: Int32(selectedState.statusExpiration)) { state in
+            // TODO: show alert
+        }
+    }
+
+    // MARK: - Navigation
     @IBAction func unwindToStateList(sender: UIStoryboardSegue) {
         if let sourceViewController = sender.source as? StateViewController, let state = sourceViewController.state {
 

@@ -70,6 +70,7 @@ class ViewController: UIViewController {
         let mainStoryBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
 
         let listViewController = mainStoryBoard.instantiateViewController(withIdentifier: "StateTableViewController") as! StateTableViewController
+        listViewController.slackApi = slackApi
         self.navigationController?.setViewControllers([listViewController], animated: true)
     }
 }
