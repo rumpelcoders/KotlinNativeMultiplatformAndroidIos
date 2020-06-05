@@ -4,10 +4,14 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
 import com.rumpel.mpp.statesonsteroids.android.R
 import com.rumpel.mpp.statesonsteroids.core.model.SlackState
-import kotlinx.android.synthetic.main.dialog_add_entry.view.*
+import kotlinx.android.synthetic.main.dialog_add_automation.view.*
+import kotlinx.android.synthetic.main.dialog_add_entry.view.state_duration
+import kotlinx.android.synthetic.main.dialog_add_entry.view.state_emoji
+import kotlinx.android.synthetic.main.dialog_add_entry.view.state_text
 
 
 private const val statusText = "statusText"

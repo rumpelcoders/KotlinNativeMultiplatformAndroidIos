@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
@@ -15,6 +14,8 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.rumpel.mpp.statesonsteroids.android.MainActivity
 import com.rumpel.mpp.statesonsteroids.android.R
+import com.rumpel.mpp.statesonsteroids.android.util.assetJsonString
+import com.rumpel.mpp.statesonsteroids.core.SlackApi
 
 private const val CHANNEL_ID: String = "test_channel"
 
@@ -30,7 +31,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         // Get the transition type.
         val geofenceTransition = geofencingEvent.geofenceTransition
 
-        context?.let {
+        context?.let { ctx ->
             val action = when (geofenceTransition) {
                 Geofence.GEOFENCE_TRANSITION_ENTER -> "entered"
                 Geofence.GEOFENCE_TRANSITION_EXIT -> "exited"
@@ -38,17 +39,18 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 else -> "unknown"
             }
             showNotification(
-                it,
+                ctx,
                 geofencingEvent.triggeringGeofences.first().requestId,
                 "Geofence notified $action ",
                 2
             )
-            Log.i(
-                GeofenceBroadcastReceiver::class.simpleName,
-                geofencingEvent.triggeringLocation
-                    .latitude.toString() + ", " + geofencingEvent.triggeringLocation
-                    .longitude.toString()
-            )
+            val slackApi = SlackApi(assetJsonString(ctx))
+            slackApi.authorize {
+                if (it.isAuthenticated) {
+                    slackApi.setState("This is just a geofencing $action", ":earth_africa:", 0) { }
+                }
+            }
+
 
         }
 

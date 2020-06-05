@@ -14,13 +14,14 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.rumpel.mpp.statesonsteroids.android.R
+import com.rumpel.mpp.statesonsteroids.android.ui.geofencing.AddAutomationEntryDialogFragment
 import com.rumpel.mpp.statesonsteroids.android.util.SlackStateClickListener
 import com.rumpel.mpp.statesonsteroids.android.util.assetJsonString
 import com.rumpel.mpp.statesonsteroids.core.*
 import com.rumpel.mpp.statesonsteroids.core.model.SlackState
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -43,9 +44,10 @@ class HomeFragment : Fragment(),
     ): View? {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
 
-        root.findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
+        root.fab.setOnClickListener {
             onAddButtonClicked()
         }
+
         FileManager.initialize(context)
 
         applicationContext = activity?.applicationContext!!

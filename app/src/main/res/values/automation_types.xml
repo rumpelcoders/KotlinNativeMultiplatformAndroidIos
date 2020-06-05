@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="automation_types">
+        <item>GPS</item>
+        <item>WIFI</item>
+    </string-array>
+
+    <string-array name="automation_types_gps_action">
+        <item>entered</item>
+        <item>exited</item>
+    </string-array>
+
+    <string-array name="automation_types_wifi_action">
+        <item>connected</item>
+        <item>disconnected</item>
+    </string-array>
+</resources>
