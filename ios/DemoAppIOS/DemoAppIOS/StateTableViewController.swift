@@ -64,6 +64,15 @@ class StateTableViewController: UITableViewController {
         }
     }
 
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            items.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+
+            StorageAdapterKt.saveStates(slackStates: NSMutableArray(array: items))
+        }
+    }
+
     // MARK: - Navigation
     @IBAction func unwindToStateList(sender: UIStoryboardSegue) {
         if let sourceViewController = sender.source as? StateViewController, let state = sourceViewController.state {
