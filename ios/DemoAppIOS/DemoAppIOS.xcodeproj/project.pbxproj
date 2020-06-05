@@ -10,6 +10,7 @@
 		6E01F017248A3567002F21C7 /* properties.json in Resources */ = {isa = PBXBuildFile; fileRef = 6E01F016248A3567002F21C7 /* properties.json */; };
 		6E01F019248A3EDC002F21C7 /* StateTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01F018248A3EDC002F21C7 /* StateTableViewController.swift */; };
 		6E01F01C248A5397002F21C7 /* StateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E01F01B248A5397002F21C7 /* StateTableViewCell.swift */; };
+		6E561BFA248A787600F90B08 /* StateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E561BF9248A787600F90B08 /* StateViewController.swift */; };
 		6E7D7D0E23BF80C800CFBFED /* Core.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6E7D7D0D23BF80C800CFBFED /* Core.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6E86668E21A7F72D00510D73 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E86668D21A7F72D00510D73 /* AppDelegate.swift */; };
 		6E86669021A7F72D00510D73 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E86668F21A7F72D00510D73 /* ViewController.swift */; };
@@ -37,6 +38,7 @@
 		6E01F016248A3567002F21C7 /* properties.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = properties.json; sourceTree = "<group>"; };
 		6E01F018248A3EDC002F21C7 /* StateTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateTableViewController.swift; sourceTree = "<group>"; };
 		6E01F01B248A5397002F21C7 /* StateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateTableViewCell.swift; sourceTree = "<group>"; };
+		6E561BF9248A787600F90B08 /* StateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateViewController.swift; sourceTree = "<group>"; };
 		6E7D7D0D23BF80C800CFBFED /* Core.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Core.framework; path = "../../Core/build/xcode-frameworks/Core.framework"; sourceTree = "<group>"; };
 		6E86668A21A7F72D00510D73 /* DemoAppIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoAppIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E86668D21A7F72D00510D73 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 				6E86668D21A7F72D00510D73 /* AppDelegate.swift */,
 				6E86668F21A7F72D00510D73 /* ViewController.swift */,
 				6E86669121A7F72D00510D73 /* Main.storyboard */,
+				6E561BF9248A787600F90B08 /* StateViewController.swift */,
 				6E01F018248A3EDC002F21C7 /* StateTableViewController.swift */,
 				6E86669421A7F72E00510D73 /* Assets.xcassets */,
 				6E86669621A7F72E00510D73 /* LaunchScreen.storyboard */,
@@ -207,6 +210,7 @@
 				6E86669021A7F72D00510D73 /* ViewController.swift in Sources */,
 				6E86668E21A7F72D00510D73 /* AppDelegate.swift in Sources */,
 				6E01F01C248A5397002F21C7 /* StateTableViewCell.swift in Sources */,
+				6E561BFA248A787600F90B08 /* StateViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -46,6 +46,17 @@ class StateTableViewController: UITableViewController {
         return cell
     }
 
+    @IBAction func unwindToStateList(sender: UIStoryboardSegue) {
+        if let sourceViewController = sender.source as? StateViewController, let state = sourceViewController.state {
+
+            // Add a new meal.
+            let newIndexPath = IndexPath(row: items.count, section: 0)
+
+            items.append(state)
+            tableView.insertRows(at: [newIndexPath], with: .automatic)
+        }
+    }
+
     // MARK: - Private methods
     private func loadSampleItems() {
         let item1 = SlackState(statusText: "at lunch", statusEmoji: ":knife_fork_plate:", statusExpiration: 50)
