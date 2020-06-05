@@ -8,6 +8,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
 import com.rumpel.mpp.statesonsteroids.android.R
+import com.rumpel.mpp.statesonsteroids.core.model.AutomationData
+import com.rumpel.mpp.statesonsteroids.core.model.AutomationEntry
 import kotlinx.android.synthetic.main.dialog_add_automation.view.*
 import kotlinx.android.synthetic.main.dialog_add_entry.view.state_duration
 import kotlinx.android.synthetic.main.dialog_add_entry.view.state_emoji
@@ -16,6 +18,9 @@ import java.util.*
 
 private const val argumentKey = "entry"
 
+private const val GPS = "GPS"
+private const val WIFI = "WIFI"
+
 /**
  * A simple [DialogFragment] subclass.
  * Use the [AddAutomationEntryDialogFragment.newInstance] factory method to
@@ -23,6 +28,8 @@ private const val argumentKey = "entry"
  */
 class AddAutomationEntryDialogFragment : DialogFragment() {
 
+    private lateinit var automationTypesAdapter: ArrayAdapter<CharSequence>
+    private lateinit var automationActionAdapter: ArrayAdapter<CharSequence>
     private val automationTypeChangedListener: AdapterView.OnItemSelectedListener =
         object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -30,7 +37,7 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
                 parent?.let {
                     automationType = parent.getItemAtPosition(pos) as String
                     val actionResource = when (automationType.toUpperCase(Locale.ROOT)) {
-                        "GPS" -> {
+                        GPS -> {
                             inflatedView.gps.visibility = View.VISIBLE
                             inflatedView.wifi.visibility = View.GONE
                             R.array.automation_types_gps_action
@@ -41,7 +48,7 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
                             R.array.automation_types_wifi_action
                         }
                     }
-                    ArrayAdapter.createFromResource(
+                    automationActionAdapter = ArrayAdapter.createFromResource(
                         context,
                         actionResource,
                         android.R.layout.simple_spinner_item
@@ -78,7 +85,7 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
             // Inflate and set the layout for the dialog
             // Pass null as the parent view because its going in the dialog layout
             inflatedView = inflater.inflate(R.layout.dialog_add_automation, null)
-            ArrayAdapter.createFromResource(
+            automationTypesAdapter = ArrayAdapter.createFromResource(
                 context,
                 R.array.automation_types,
                 android.R.layout.simple_spinner_item
@@ -111,7 +118,7 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
                     R.string.add
                 ) { _, _ ->
                     listener.addEntry(
-                        readValuesFromView(UUID.randomUUID(), view)
+                        readValuesFromView(UUID.randomUUID().toString(), view)
                     )
                 }
                 .setNegativeButton(
@@ -143,12 +150,15 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
     private fun writeValuesToView(view: View, entry: AutomationEntry) {
         when (entry.automationData) {
             is AutomationData.GpsAutomationData -> {
-                view.latitude.setText(entry.automationData.latitude.toString())
-                view.longitude.setText(entry.automationData.longitude.toString())
-                view.radius.setText(entry.automationData.radius.toString())
+                view.latitude.setText((entry.automationData as AutomationData.GpsAutomationData).latitude.toString())
+                view.longitude.setText((entry.automationData as AutomationData.GpsAutomationData).longitude.toString())
+                view.radius.setText((entry.automationData as AutomationData.GpsAutomationData).radius.toString())
+                view.automation_type_spinner.setSelection(automationTypesAdapter.getPosition(GPS))
+                view.automation_type_spinner.setSelection(automationActionAdapter.getPosition(entry.automationAction))
             }
             is AutomationData.WifiAutomationData -> {
-                view.ssid.setText(entry.automationData.ssid)
+                view.automation_type_spinner.setSelection(automationTypesAdapter.getPosition(WIFI))
+                view.ssid.setText((entry.automationData as AutomationData.WifiAutomationData).ssid)
             }
         }
         view.state_text.setText(entry.statusText)
@@ -156,12 +166,12 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
         view.state_duration.setText((entry.statusExpiration).toString())
     }
 
-    private fun readValuesFromView(id: UUID, view: View): AutomationEntry {
+    private fun readValuesFromView(id: String, view: View): AutomationEntry {
         return AutomationEntry(
             id,
             actionType,
             when (automationType) {
-                "GPS" -> {
+                GPS -> {
                     AutomationData.GpsAutomationData(
                         view.latitude.text.toString().toDouble(),
                         view.longitude.text.toString().toDouble(),

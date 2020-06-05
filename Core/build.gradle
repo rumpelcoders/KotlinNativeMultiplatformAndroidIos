@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'kotlin-multiplatform'
+apply plugin: 'kotlin-android-extensions'
+
 
 ext.serialization_version = '0.6.1'
 

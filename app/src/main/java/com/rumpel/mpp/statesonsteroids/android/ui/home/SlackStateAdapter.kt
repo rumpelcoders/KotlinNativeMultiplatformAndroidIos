@@ -9,6 +9,7 @@ import android.widget.Button
 import com.rumpel.mpp.statesonsteroids.android.R
 import com.rumpel.mpp.statesonsteroids.core.model.SlackState
 import com.rumpel.mpp.statesonsteroids.android.util.SlackStateClickListener
+import kotlinx.android.parcel.Parcelize
 
 class SlackStateAdapter(
     context: Context,

@@ -64,6 +64,19 @@ fun showNotification(
     title: String,
     id: Int
 ) {
+
+    var builder = createNotification(context, title, text)
+
+    with(NotificationManagerCompat.from(context)) {
+        // notificationId is a unique int for each notification that you must define
+        notify(id, builder.build())
+    }
+}
+ fun createNotification(
+    context: Context,
+    title: String,
+    text: String?
+): NotificationCompat.Builder {
     val intent = Intent(context, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
@@ -77,11 +90,7 @@ fun showNotification(
         .setAutoCancel(true)
 
     createNotificationChannel(context)
-
-    with(NotificationManagerCompat.from(context)) {
-        // notificationId is a unique int for each notification that you must define
-        notify(id, builder.build())
-    }
+    return builder
 }
 
 private fun createNotificationChannel(context: Context) {
