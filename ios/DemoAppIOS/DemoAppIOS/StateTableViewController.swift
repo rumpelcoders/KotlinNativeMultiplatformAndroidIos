@@ -51,7 +51,11 @@ class StateTableViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
 
         slackApi.setState(state: selectedState.statusText, emoji: selectedState.statusEmoji, duration: Int32(selectedState.statusExpiration)) { state in
-            // TODO: show alert
+            let alert = UIAlertController(title: nil, message: "State successfully set to: \(state.statusText).", preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+            self.present(alert, animated: true)
         }
     }
 
