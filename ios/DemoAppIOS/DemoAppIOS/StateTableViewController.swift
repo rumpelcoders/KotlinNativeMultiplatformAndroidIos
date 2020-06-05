@@ -18,7 +18,12 @@ class StateTableViewController: UITableViewController {
         super.viewDidLoad()
 
         title = "Slack States on Steroids"
-        loadSampleItems()
+
+        items += StorageAdapterKt.loadStates()
+
+        if items.isEmpty {
+            loadSampleStates()
+        }
     }
 
     // MARK: - Table view data source
@@ -68,11 +73,14 @@ class StateTableViewController: UITableViewController {
 
             items.append(state)
             tableView.insertRows(at: [newIndexPath], with: .automatic)
+
+            // TODO: api shouldn't take a mutable object here :D
+            StorageAdapterKt.saveStates(slackStates: NSMutableArray(array: items))
         }
     }
 
     // MARK: - Private methods
-    private func loadSampleItems() {
+    private func loadSampleStates() {
         let item1 = SlackState(statusText: "at lunch", statusEmoji: ":knife_fork_plate:", statusExpiration: 50)
         let item2 = SlackState(statusText: "AFK", statusEmoji: ":coffee:", statusExpiration: 20)
 
