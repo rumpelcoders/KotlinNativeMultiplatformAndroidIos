@@ -13,44 +13,64 @@ import WebKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var webView: WKWebView?
+
     private var slackApi: SlackApi!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let properties = loadPropertiesJsonString()
 
-        let apiString = """
-        {
-          "clientId": "18044401633.961752886881",
-          "clientSecret": "d7ee42e29b36e3face61217c59266b2b"
-        }
-        """
+        slackApi = SlackApi(apiPropertiesString: properties)
+    }
 
-        slackApi = SlackApi(apiPropertiesString: apiString)
-
+    override func viewDidAppear(_ animated: Bool) {
         slackApi.authorize { result in
-            if result.isAuthenticated {
-                print("GOOD")
-                // TODO: Do magic views buttons gibihmela
-                self.slackApi.setState(state: "Done for today", emoji: ":beers:", duration: 420) { state in
-                    print ("state set successfully to: \(state.statusText)")
+                    if result.isAuthenticated {
+                        print("Authenticated. Continuing directly")
+                        let request = URLRequest(url: URL(string: "https://www.google.at")!)
+
+                        self.webView?.load(request)
+                        self.showList()
+        //                self.slackApi.setState(state: "Done for today", emoji: ":beers:", duration: 420) { state in
+        //                    print ("state set successfully to: \(state.statusText)")
+        //                }
+                    } else {
+                        print("Not Authenticated. Showing WebView")
+                        self.webView?.navigationDelegate = self
+                        guard let content = result.content else {
+                            return
+                        }
+
+                        let request = URLRequest(url: URL(string: content)!)
+
+                        self.webView?.load(request)
+                    }
                 }
-            } else {
-                print("NOT good")
+    }
 
-                let webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 400, height: 800))
-                webView.center = CGPoint(x: 160, y: 285)
-
-                self.view.addSubview(webView)
-
-                webView.navigationDelegate = self
-                guard let content = result.content else {
-                    return
-                }
-
-                webView.loadHTMLString(content, baseURL: nil)
-            }
+    private func loadPropertiesJsonString() -> String {
+        guard let filepath = Bundle.main.path(forResource: "properties", ofType: "json") else {
+            print("Properties file not found!")
+            return ""
         }
+
+        do {
+            let contents = try String(contentsOfFile: filepath)
+            return contents
+        } catch {
+            print("Failed to read properties file!")
+        }
+
+        return ""
+    }
+
+    private func showList() {
+        let mainStoryBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+
+        let listViewController = mainStoryBoard.instantiateViewController(withIdentifier: "StateTableViewController") as! StateTableViewController
+        self.navigationController?.setViewControllers([listViewController], animated: true)
     }
 }
 
@@ -62,7 +82,7 @@ extension ViewController: WKNavigationDelegate {
             decisionHandler(.cancel)
             self.slackApi.onRedirectCodeReceived(url: responseUrl!) {
                 print("Success! - Authenticated!")
-                // TODO: swap views
+                self.showList()
             }
             return
         }
