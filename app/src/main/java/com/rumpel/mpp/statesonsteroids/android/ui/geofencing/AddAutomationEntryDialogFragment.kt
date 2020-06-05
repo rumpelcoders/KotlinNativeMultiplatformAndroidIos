@@ -25,18 +25,48 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
 
     private val automationTypeChangedListener: AdapterView.OnItemSelectedListener =
         object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                automationType = null
-            }
-
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
                 parent?.let {
                     automationType = parent.getItemAtPosition(pos) as String
+                    val actionResource = when (automationType.toUpperCase(Locale.ROOT)) {
+                        "GPS" -> {
+                            inflatedView.gps.visibility = View.VISIBLE
+                            inflatedView.wifi.visibility = View.GONE
+                            R.array.automation_types_gps_action
+                        }
+                        else -> {
+                            inflatedView.gps.visibility = View.GONE
+                            inflatedView.wifi.visibility = View.VISIBLE
+                            R.array.automation_types_wifi_action
+                        }
+                    }
+                    ArrayAdapter.createFromResource(
+                        context,
+                        actionResource,
+                        android.R.layout.simple_spinner_item
+                    ).also { adapter ->
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        inflatedView.automation_action_spinner.adapter = adapter
+                    }
                 }
             }
         }
 
-    private var automationType: String? = null
+    private val automationActionChangedListener: AdapterView.OnItemSelectedListener =
+        object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+                parent?.let {
+                    actionType = parent.getItemAtPosition(pos) as String
+                }
+            }
+        }
+
+
+    private lateinit var automationType: String
+    private lateinit var actionType: String
+    private lateinit var inflatedView: View
     private lateinit var listener: AddAutomationEntryDialogListener
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -47,30 +77,26 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
 
             // Inflate and set the layout for the dialog
             // Pass null as the parent view because its going in the dialog layout
-            val view = inflater.inflate(R.layout.dialog_add_automation, null)
+            inflatedView = inflater.inflate(R.layout.dialog_add_automation, null)
             ArrayAdapter.createFromResource(
                 context,
                 R.array.automation_types,
                 android.R.layout.simple_spinner_item
             ).also { adapter ->
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                view.automation_type_spinner.adapter = adapter
+                inflatedView.automation_type_spinner.adapter = adapter
             }
-            view.automation_type_spinner.onItemSelectedListener = automationTypeChangedListener
+            inflatedView.automation_type_spinner.onItemSelectedListener =
+                automationTypeChangedListener
+            inflatedView.automation_action_spinner.onItemSelectedListener =
+                automationActionChangedListener
             val entry = arguments?.getParcelable<AutomationEntry>(argumentKey)
-            setViewValues(view, entry)
-            buildButtons(entry, builder, view)
+            entry?.let {
+                writeValuesToView(inflatedView, entry)
+            }
+            buildButtons(entry, builder, inflatedView)
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
-    }
-
-    private fun setViewValues(
-        view: View,
-        entry: AutomationEntry?
-    ) {
-        view.state_text.setText(entry?.statusText)
-        view.state_emoji.setText(entry?.statusEmoji)
-        view.state_duration.setText((entry?.statusExpiration ?: 0).toString())
     }
 
     private fun buildButtons(
@@ -85,7 +111,7 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
                     R.string.add
                 ) { _, _ ->
                     listener.addEntry(
-                        buildEntry(UUID.randomUUID(), view)
+                        readValuesFromView(UUID.randomUUID(), view)
                     )
                 }
                 .setNegativeButton(
@@ -94,14 +120,13 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
                     dialog?.cancel()
                 }
         } else {
-            view.state_text.isEnabled = false
             builder.setView(view)
                 // Add action buttons
                 .setPositiveButton(
                     "Save"
                 ) { _, _ ->
-                    listener.saveEntry(
-                        buildEntry(entry.id, view)
+                    listener.updateEntry(
+                        readValuesFromView(entry.id, view)
                     )
                 }
                 .setNegativeButton(
@@ -115,15 +140,39 @@ class AddAutomationEntryDialogFragment : DialogFragment() {
         }
     }
 
-    private fun buildEntry(id: UUID, view: View): AutomationEntry {
+    private fun writeValuesToView(view: View, entry: AutomationEntry) {
+        when (entry.automationData) {
+            is AutomationData.GpsAutomationData -> {
+                view.latitude.setText(entry.automationData.latitude.toString())
+                view.longitude.setText(entry.automationData.longitude.toString())
+                view.radius.setText(entry.automationData.radius.toString())
+            }
+            is AutomationData.WifiAutomationData -> {
+                view.ssid.setText(entry.automationData.ssid)
+            }
+        }
+        view.state_text.setText(entry.statusText)
+        view.state_emoji.setText(entry.statusEmoji)
+        view.state_duration.setText((entry.statusExpiration).toString())
+    }
+
+    private fun readValuesFromView(id: UUID, view: View): AutomationEntry {
         return AutomationEntry(
             id,
-            "view.automation_action_spinner.se",
-            AutomationData.GpsAutomationData(
-                view.latitude.text.toString().toDouble(),
-                view.longitude.text.toString().toDouble(),
-                view.radius.text.toString().toFloat()
-            ),
+            actionType,
+            when (automationType) {
+                "GPS" -> {
+                    AutomationData.GpsAutomationData(
+                        view.latitude.text.toString().toDouble(),
+                        view.longitude.text.toString().toDouble(),
+                        view.radius.text.toString().toFloat()
+                    )
+                }
+                else -> {
+                    AutomationData.WifiAutomationData(view.ssid.text.toString())
+                }
+            },
+
             view.state_text.text.toString().trim(),
             view.state_emoji.text.toString().trim(),
             view.state_duration.text.toString().toLongOrNull() ?: 0

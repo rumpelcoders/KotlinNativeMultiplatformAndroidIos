@@ -62,7 +62,7 @@ class HomeFragment : Fragment(),
             slackStates.initDefaultStates()
         }
 
-        root.findViewById<ListView>(R.id.list_view).adapter =
+        root.list_view.adapter =
             SlackStateAdapter(
                 applicationContext,
                 slackStates,
@@ -135,7 +135,6 @@ class HomeFragment : Fragment(),
         slackStates.add(entry)
         (list_view.adapter as SlackStateAdapter).notifyDataSetChanged()
         saveStates(slackStates)
-
     }
 
     override fun saveEntry(state: SlackState) {

@@ -11,8 +11,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.location.*
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.GeofencingRequest
+import com.google.android.gms.location.LocationServices
 import com.rumpel.mpp.statesonsteroids.android.R
+import com.rumpel.mpp.statesonsteroids.core.saveString
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import java.util.*
 
@@ -20,6 +25,18 @@ import java.util.*
 class GeofencingFragment : Fragment(),
     AddAutomationEntryDialogListener {
 
+    private val automationEntryClickListener = object : AutomationEntryClickListener {
+        override fun onEntryClicked(entry: AutomationEntry) {
+            val newFragment = AddAutomationEntryDialogFragment.newInstance(this@GeofencingFragment, entry)
+            newFragment.show(activity?.supportFragmentManager!!, "addAutomationEntryTag")
+        }
+
+        override fun onEntryLongClicked(entry: AutomationEntry) {
+            TODO("Not yet implemented")
+        }
+
+    }
+    private val entries = mutableListOf<AutomationEntry>()
     private val geofenceList = mutableListOf<Geofence>()
     lateinit var geofencingClient: GeofencingClient
 
@@ -32,6 +49,14 @@ class GeofencingFragment : Fragment(),
         root.fab.setOnClickListener {
             onAddButtonClicked()
         }
+
+        root.list_view.adapter =
+            AutomationEntryAdapter(
+                context!!,
+                entries,
+                automationEntryClickListener
+            )
+
         geofencingClient = LocationServices.getGeofencingClient(activity!!)
 
         geofenceList.add(
@@ -101,15 +126,24 @@ class GeofencingFragment : Fragment(),
     }
 
     override fun addEntry(entry: AutomationEntry) {
-        TODO("Not yet implemented")
+        entries.add(entry)
+        val data = entries.joinToString { it.toString() }
+        saveString(data, "entries")
+        (list_view.adapter as AutomationEntryAdapter).notifyDataSetChanged()
     }
 
-    override fun saveEntry(state: AutomationEntry) {
+    override fun updateEntry(entry: AutomationEntry) {
         TODO("Not yet implemented")
+        val first = entries.first { it.id == entry.id }
+        entries.remove(first)
+        entries.add(entry)
+        (list_view.adapter as AutomationEntryAdapter).notifyDataSetChanged()
     }
 
     override fun deleteEntry(id: UUID) {
-        TODO("Not yet implemented")
+        val first = entries.first { it.id == id }
+        entries.remove(first)
+        (list_view.adapter as AutomationEntryAdapter).notifyDataSetChanged()
     }
 }
 

@@ -2,11 +2,12 @@ package com.rumpel.mpp.statesonsteroids.android.ui.geofencing
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+
 import java.util.*
 
 interface AddAutomationEntryDialogListener {
     fun addEntry(entry: AutomationEntry)
-    fun saveEntry(state: AutomationEntry)
+    fun updateEntry(state: AutomationEntry)
     fun deleteEntry(id: UUID)
 }
 
@@ -26,5 +27,5 @@ sealed class AutomationData : Parcelable {
         AutomationData()
 
     @Parcelize
-    data class WifiAutomationData(val ssid: Double) : AutomationData()
+    data class WifiAutomationData(val ssid: String) : AutomationData()
 }
