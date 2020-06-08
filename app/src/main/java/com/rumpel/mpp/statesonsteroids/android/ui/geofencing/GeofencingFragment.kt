@@ -5,14 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.rumpel.mpp.statesonsteroids.android.R
 import com.rumpel.mpp.statesonsteroids.core.loadAutomationEntries
+import com.rumpel.mpp.statesonsteroids.core.model.AutomationData
 import com.rumpel.mpp.statesonsteroids.core.model.AutomationEntry
 import com.rumpel.mpp.statesonsteroids.core.saveAutomationEntries
 import kotlinx.android.synthetic.main.fragment_geofencing.*
 import kotlinx.android.synthetic.main.fragment_geofencing.view.*
-import kotlinx.android.synthetic.main.fragment_geofencing.view.list_view
 
 
 class GeofencingFragment : Fragment(),
@@ -20,7 +21,8 @@ class GeofencingFragment : Fragment(),
 
     private val automationEntryClickListener = object : AutomationEntryClickListener {
         override fun onEntryClicked(entry: AutomationEntry) {
-            val newFragment = AddAutomationEntryDialogFragment.newInstance(this@GeofencingFragment, entry)
+            val newFragment =
+                AddAutomationEntryDialogFragment.newInstance(this@GeofencingFragment, entry)
             newFragment.show(activity?.supportFragmentManager!!, "addAutomationEntryTag")
         }
 
@@ -43,9 +45,7 @@ class GeofencingFragment : Fragment(),
         loadAutomationEntries().forEach {
             entries.add(it)
         }
-        activity?.let {
-            checkGeofencingPermission(it)
-        }
+        initializeGeofencing()
 
         context?.startForegroundService(Intent(context, WifiMonitoringService::class.java))
         //todo load all geofences
@@ -61,11 +61,44 @@ class GeofencingFragment : Fragment(),
         return root
     }
 
+    private fun initializeGeofencing() {
+        activity?.let {
+            checkGeofencingPermission(it)
+        }
+
+        context?.let { context ->
+            try {
+                val handler = GeofencingHandler(context)
+                entries.filter { it.automationData is AutomationData.GpsAutomationData }
+                    .forEach {
+                        val gpsAutomationData =
+                            it.automationData as AutomationData.GpsAutomationData
+                        handler.add(
+                            GeoFenceData(
+                                it.id,
+                                it.statusText,
+                                gpsAutomationData.latitude,
+                                gpsAutomationData.longitude,
+                                gpsAutomationData.radius
+                            )
+                        )
+                    }
+                handler.startObserving()
+            } catch (e: Exception) {
+                Toast.makeText(
+                    context,
+                    "An unexpected error occurred initializing the geofence.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        }
+    }
+
     private fun onAddButtonClicked() {
         val newFragment = AddAutomationEntryDialogFragment.newInstance(this)
         newFragment.show(activity?.supportFragmentManager!!, "addAutomationEntryTag")
     }
-
 
 
     override fun addEntry(entry: AutomationEntry) {

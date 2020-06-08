@@ -14,7 +14,7 @@ import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 
 class GeofencingHandler(private val context: Context) {
-    var geofencingClient: GeofencingClient = LocationServices.getGeofencingClient(context)
+    private var geofencingClient: GeofencingClient = LocationServices.getGeofencingClient(context)
     private val geofenceList = mutableListOf<Geofence>()
 
 
@@ -32,6 +32,9 @@ class GeofencingHandler(private val context: Context) {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            return
+        }
+        if(geofenceList.isEmpty()){
             return
         }
         geofencingClient.addGeofences(getGeofencingRequest(), geofencePendingIntent)?.run {
