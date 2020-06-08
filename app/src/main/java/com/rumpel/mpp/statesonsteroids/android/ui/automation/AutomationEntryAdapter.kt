@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import com.rumpel.mpp.statesonsteroids.android.R
+import com.rumpel.mpp.statesonsteroids.core.model.AutomationData
 import com.rumpel.mpp.statesonsteroids.core.model.AutomationEntry
 
 class AutomationEntryAdapter(
@@ -14,8 +15,10 @@ class AutomationEntryAdapter(
     objects: MutableList<AutomationEntry>,
     private val clickListener: AutomationEntryClickListener
 ) :
-    ArrayAdapter<AutomationEntry>(context,
-        R.layout.item_slack_state, objects) {
+    ArrayAdapter<AutomationEntry>(
+        context,
+        R.layout.item_slack_state, objects
+    ) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view = convertView
@@ -46,12 +49,23 @@ class AutomationEntryAdapter(
         } catch (e: Exception) {
             state.statusEmoji
         }
-        holder.button.text = "${state.statusText} $emoji ${state.statusExpiration}min"
+        val type = when (state.automationData) {
+            is AutomationData.GpsAutomationData -> "GPS"
+            is AutomationData.WifiAutomationData -> "WIFI"
+            else -> "UNKNOWN"
+        }
+        var stateString =
+            if (state.statusText.isBlank() && emoji.isBlank()) {
+                "clear"
+            } else {
+                " ${state.statusText} $emoji"
+            }
+
+        holder.button.text = "$type(${state.automationAction}) $stateString"
         holder.button.setOnClickListener { holder.clickListener.onEntryClicked(state) }
         holder.button.setOnLongClickListener {
             holder.clickListener.onEntryLongClicked(state)
             return@setOnLongClickListener true
-
         }
 
 
