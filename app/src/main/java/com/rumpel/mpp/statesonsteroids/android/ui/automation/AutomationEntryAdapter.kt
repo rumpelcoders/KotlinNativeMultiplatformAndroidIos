@@ -40,7 +40,7 @@ class AutomationEntryAdapter(
             else -> "UNKNOWN"
         }
 
-        var stateString = state.getStateString()
+        val stateString = state.getStateString()
 
         holder.button.text = "$type(${state.automationAction}) $stateString"
         holder.button.setOnClickListener { holder.clickListener.onEntryClicked(state) }
