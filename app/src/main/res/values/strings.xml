@@ -25,8 +25,8 @@
     <string name="state_set">State set successfully!</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_dashboard">Automation</string>
+    <string name="title_notifications">History</string>
     <string name="channel_name">"GeoFence "</string>
     <string name="channel_description">Channel for geofence updates</string>
     <string name="service_title">Slack automatic states</string>
