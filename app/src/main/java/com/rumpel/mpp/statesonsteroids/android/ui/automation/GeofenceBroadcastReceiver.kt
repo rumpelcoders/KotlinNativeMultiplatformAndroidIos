@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android.ui.automatization
+package com.rumpel.mpp.statesonsteroids.android.ui.automation
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

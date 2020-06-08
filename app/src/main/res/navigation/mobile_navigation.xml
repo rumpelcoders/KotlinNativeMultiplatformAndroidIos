@@ -13,7 +13,7 @@
 
     <fragment
             android:id="@+id/navigation_dashboard"
-            android:name="com.rumpel.mpp.statesonsteroids.android.ui.automatization.GeofencingFragment"
+            android:name="com.rumpel.mpp.statesonsteroids.android.ui.automation.GeofencingFragment"
             android:label="@string/title_dashboard"
             tools:layout="@layout/fragment_geofencing" />
 

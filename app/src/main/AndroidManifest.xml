@@ -26,21 +26,12 @@
         </activity>
 
         <receiver
-                android:name=".ui.automatization.GeofenceBroadcastReceiver"
+                android:name=".ui.automation.GeofenceBroadcastReceiver"
                 android:enabled="true"
                 android:exported="true" />
 
-        <receiver
-                android:name=".ui.automatization.WifiReceiver"
-                android:enabled="true"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-
         <service
-                android:name=".ui.automatization.WifiMonitoringService"
+                android:name=".ui.automation.WifiMonitoringService"
                 >
         </service>
     </application>
