@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android.ui.automation
+package com.rumpel.mpp.statesonsteroids.android.geofencing
 
 data class GeoFenceData(
     val key: String,

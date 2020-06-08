@@ -10,6 +10,7 @@ import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.IBinder
 import com.rumpel.mpp.statesonsteroids.android.R
+import com.rumpel.mpp.statesonsteroids.android.geofencing.createNotification
 import com.rumpel.mpp.statesonsteroids.android.util.assetJsonString
 import com.rumpel.mpp.statesonsteroids.core.SlackApi
 import com.rumpel.mpp.statesonsteroids.core.loadAutomationEntries

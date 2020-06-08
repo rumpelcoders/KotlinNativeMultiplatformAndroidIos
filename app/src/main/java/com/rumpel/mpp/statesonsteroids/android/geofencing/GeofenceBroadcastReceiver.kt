@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android.ui.automation
+package com.rumpel.mpp.statesonsteroids.android.geofencing
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -65,7 +65,12 @@ fun showNotification(
     id: Int
 ) {
 
-    var builder = createNotification(context, title, text)
+    var builder =
+        createNotification(
+            context,
+            title,
+            text
+        )
 
     with(NotificationManagerCompat.from(context)) {
         // notificationId is a unique int for each notification that you must define
@@ -81,7 +86,9 @@ fun showNotification(
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
     val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-    var builder = NotificationCompat.Builder(context, CHANNEL_ID)
+    var builder = NotificationCompat.Builder(context,
+        CHANNEL_ID
+    )
         .setContentTitle(title)
         .setContentText(text)
         .setSmallIcon(R.drawable.exo_notification_small_icon)
@@ -89,7 +96,9 @@ fun showNotification(
         .setContentIntent(pendingIntent)
         .setAutoCancel(true)
 
-    createNotificationChannel(context)
+     createNotificationChannel(
+         context
+     )
     return builder
 }
 

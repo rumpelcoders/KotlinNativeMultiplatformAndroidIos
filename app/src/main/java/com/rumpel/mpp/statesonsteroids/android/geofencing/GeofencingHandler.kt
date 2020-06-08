@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android.ui.automation
+package com.rumpel.mpp.statesonsteroids.android.geofencing
 
 import android.Manifest
 import android.app.Activity
@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.Geofence.*
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
@@ -34,7 +35,7 @@ class GeofencingHandler(private val context: Context) {
         ) {
             return
         }
-        if(geofenceList.isEmpty()){
+        if (geofenceList.isEmpty()) {
             return
         }
         geofencingClient.addGeofences(getGeofencingRequest(), geofencePendingIntent)?.run {
@@ -48,18 +49,15 @@ class GeofencingHandler(private val context: Context) {
     }
 
     private fun createGeoFence(entry: GeoFenceData): Geofence {
-        return Geofence.Builder()
+        return Builder()
             .setRequestId(entry.key)
             .setCircularRegion(
                 entry.latitude,
                 entry.longitude,
                 entry.radius
             )
-            .setExpirationDuration(Geofence.NEVER_EXPIRE)
-            .setTransitionTypes(
-                Geofence.GEOFENCE_TRANSITION_EXIT
-                        or Geofence.GEOFENCE_TRANSITION_ENTER
-            )
+            .setExpirationDuration(NEVER_EXPIRE)
+            .setTransitionTypes(GEOFENCE_TRANSITION_EXIT or GEOFENCE_TRANSITION_ENTER)
             .build()
     }
 
