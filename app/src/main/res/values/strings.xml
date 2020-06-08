@@ -29,5 +29,7 @@
     <string name="title_notifications">Notifications</string>
     <string name="channel_name">"GeoFence "</string>
     <string name="channel_description">Channel for geofence updates</string>
+    <string name="service_title">Slack automatic states</string>
+    <string name="service_description">Watching for automatic state triggers</string>
 
 </resources>
