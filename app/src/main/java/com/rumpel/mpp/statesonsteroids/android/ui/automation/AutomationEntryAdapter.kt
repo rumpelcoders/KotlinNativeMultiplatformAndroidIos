@@ -26,40 +26,21 @@ class AutomationEntryAdapter(
         if (view == null) {
             view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_slack_state, parent, false)
-            val stateViewHolder =
-                StateViewHolder(
-                    view,
-                    clickListener
-                )
+            val stateViewHolder = StateViewHolder(view, clickListener)
             view.tag = stateViewHolder
         }
 
         val holder = view!!.tag as StateViewHolder
         val state = getItem(position) ?: return view
 
-        val packageName: String = context.packageName
-        val resId: Int = context.resources.getIdentifier(
-            state.statusEmoji.replace(":", ""),
-            "string",
-            packageName
-        )
 
-        val emoji = try {
-            context.getString(resId)
-        } catch (e: Exception) {
-            state.statusEmoji
-        }
         val type = when (state.automationData) {
             is AutomationData.GpsAutomationData -> "GPS"
             is AutomationData.WifiAutomationData -> "WIFI"
             else -> "UNKNOWN"
         }
-        var stateString =
-            if (state.statusText.isBlank() && emoji.isBlank()) {
-                "clear"
-            } else {
-                " ${state.statusText} $emoji"
-            }
+
+        var stateString = state.getStateString()
 
         holder.button.text = "$type(${state.automationAction}) $stateString"
         holder.button.setOnClickListener { holder.clickListener.onEntryClicked(state) }
@@ -72,12 +53,27 @@ class AutomationEntryAdapter(
         return view
     }
 
+    private fun AutomationEntry.getStateString(): String {
+        val packageName: String = context.packageName
+        val resId: Int = context.resources.getIdentifier(
+            statusEmoji.replace(":", ""),
+            "string",
+            packageName
+        )
+        val emoji = try {
+            context.getString(resId)
+        } catch (e: Exception) {
+            statusEmoji
+        }
+        return if (statusText.isBlank() && emoji.isBlank()) {
+            "clear"
+        } else {
+            " $statusText $emoji"
+        }
+    }
+
     class StateViewHolder(val itemView: View, val clickListener: AutomationEntryClickListener) {
         val button: Button = itemView.findViewById(R.id.btn_state)
     }
 }
 
-interface AutomationEntryClickListener {
-    fun onEntryClicked(entry: AutomationEntry)
-    fun onEntryLongClicked(entry: AutomationEntry)
-}
