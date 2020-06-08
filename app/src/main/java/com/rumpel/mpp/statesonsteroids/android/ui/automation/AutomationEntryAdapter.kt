@@ -15,10 +15,7 @@ class AutomationEntryAdapter(
     objects: MutableList<AutomationEntry>,
     private val clickListener: AutomationEntryClickListener
 ) :
-    ArrayAdapter<AutomationEntry>(
-        context,
-        R.layout.item_slack_state, objects
-    ) {
+    ArrayAdapter<AutomationEntry>(context, R.layout.item_slack_state, objects) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view = convertView
@@ -72,7 +69,7 @@ class AutomationEntryAdapter(
         }
     }
 
-    class StateViewHolder(val itemView: View, val clickListener: AutomationEntryClickListener) {
+    class StateViewHolder(itemView: View, val clickListener: AutomationEntryClickListener) {
         val button: Button = itemView.findViewById(R.id.btn_state)
     }
 }
