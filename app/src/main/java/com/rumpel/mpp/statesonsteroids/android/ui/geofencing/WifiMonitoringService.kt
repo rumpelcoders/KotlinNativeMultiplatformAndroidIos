@@ -18,19 +18,19 @@ import com.rumpel.mpp.statesonsteroids.core.model.AutomationEntry
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
+private const val STATE_CONNECTED = "connected"
+private const val STATE_DISCONNECTED = "disconnected"
+
 class WifiMonitoringService : Service() {
     private var deviceName: String? = null
     private var networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onLost(network: Network?) {
             val slackApi = SlackApi(assetJsonString(this@WifiMonitoringService))
-            //record wi-fi disconnect event
             val entries = loadAutomationEntries()
-            val actionItems =
-                filterEntries(entries, "disconnected")
-
-
-            slackApi.setSlackState(actionItems)
-
+            val actionItems = filterEntries(entries, STATE_DISCONNECTED, deviceName)
+            actionItems.lastOrNull()?.let {
+                slackApi.setSlackState(it)
+            }
         }
 
         override fun onUnavailable() {
@@ -45,9 +45,10 @@ class WifiMonitoringService : Service() {
 
 
             val entries = loadAutomationEntries()
-            val actionItems = filterEntries(entries, "connected")
-
-            slackApi.setSlackState(actionItems)
+            val actionItems = filterEntries(entries, STATE_CONNECTED, deviceName)
+            actionItems.lastOrNull()?.let {
+                slackApi.setSlackState(it)
+            }
         }
 
 
@@ -91,7 +92,7 @@ fun WifiManager.deviceName(): String = connectionInfo.ssid.run {
     if (this.contains("<unknown ssid>")) "UNKNOWN" else this
 }
 
-fun SlackApi.setSlackState(actionItems: List<AutomationEntry>) {
+fun SlackApi.setSlackState(item: AutomationEntry) {
     authorize {
         if (it.isAuthenticated) {
             //we are in a very unstable network situation here as wifi just did something.
@@ -99,13 +100,11 @@ fun SlackApi.setSlackState(actionItems: List<AutomationEntry>) {
             runBlocking {
                 delay(5000)
             }
-            actionItems.forEach { item ->
-                setState(
-                    item.statusText,
-                    item.statusEmoji,
-                    item.statusExpiration.toInt()
-                ) { }
-            }
+            setState(
+                item.statusText,
+                item.statusEmoji,
+                item.statusExpiration.toInt()
+            ) { }
         }
     }
 }
