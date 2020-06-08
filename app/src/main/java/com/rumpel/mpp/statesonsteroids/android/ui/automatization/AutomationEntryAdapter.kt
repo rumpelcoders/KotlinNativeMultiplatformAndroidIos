@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android.ui.geofencing
+package com.rumpel.mpp.statesonsteroids.android.ui.automatization
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import com.rumpel.mpp.statesonsteroids.android.R
-import com.rumpel.mpp.statesonsteroids.core.model.SlackState
-import com.rumpel.mpp.statesonsteroids.android.util.SlackStateClickListener
 import com.rumpel.mpp.statesonsteroids.core.model.AutomationEntry
 
 class AutomationEntryAdapter(

@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android.ui.geofencing
+package com.rumpel.mpp.statesonsteroids.android.ui.automatization
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

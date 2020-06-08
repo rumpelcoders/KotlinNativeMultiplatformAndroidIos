@@ -26,12 +26,12 @@
         </activity>
 
         <receiver
-                android:name=".ui.geofencing.GeofenceBroadcastReceiver"
+                android:name=".ui.automatization.GeofenceBroadcastReceiver"
                 android:enabled="true"
                 android:exported="true" />
 
         <receiver
-                android:name=".ui.geofencing.WifiReceiver"
+                android:name=".ui.automatization.WifiReceiver"
                 android:enabled="true"
                 android:exported="false">
             <intent-filter>
@@ -40,7 +40,7 @@
         </receiver>
 
         <service
-                android:name=".ui.geofencing.WifiMonitoringService"
+                android:name=".ui.automatization.WifiMonitoringService"
                 >
         </service>
     </application>

@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android.ui.geofencing
+package com.rumpel.mpp.statesonsteroids.android.ui.automatization
 
 import android.app.Service
 import android.content.Context
@@ -42,7 +42,6 @@ class WifiMonitoringService : Service() {
         override fun onAvailable(network: Network?) {
             val slackApi = SlackApi(assetJsonString(this@WifiMonitoringService))
             getDeviceName()
-
 
             val entries = loadAutomationEntries()
             val actionItems = filterEntries(entries, STATE_CONNECTED, deviceName)

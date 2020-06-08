@@ -1,8 +1,6 @@
-package com.rumpel.mpp.statesonsteroids.android.ui.geofencing
+package com.rumpel.mpp.statesonsteroids.android.ui.automatization
 
 import com.rumpel.mpp.statesonsteroids.core.model.AutomationEntry
-
-import java.util.*
 
 interface AddAutomationEntryDialogListener {
     fun addEntry(entry: AutomationEntry)

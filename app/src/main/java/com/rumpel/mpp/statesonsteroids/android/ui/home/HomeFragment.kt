@@ -11,11 +11,9 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
-import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.rumpel.mpp.statesonsteroids.android.R
-import com.rumpel.mpp.statesonsteroids.android.ui.geofencing.AddAutomationEntryDialogFragment
 import com.rumpel.mpp.statesonsteroids.android.util.SlackStateClickListener
 import com.rumpel.mpp.statesonsteroids.android.util.assetJsonString
 import com.rumpel.mpp.statesonsteroids.core.*
