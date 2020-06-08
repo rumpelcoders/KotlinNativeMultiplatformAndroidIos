@@ -14,8 +14,12 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.rumpel.mpp.statesonsteroids.android.MainActivity
 import com.rumpel.mpp.statesonsteroids.android.R
+import com.rumpel.mpp.statesonsteroids.android.automation.wifi.setSlackState
 import com.rumpel.mpp.statesonsteroids.android.util.assetJsonString
 import com.rumpel.mpp.statesonsteroids.core.SlackApi
+import com.rumpel.mpp.statesonsteroids.core.loadAutomationEntries
+import com.rumpel.mpp.statesonsteroids.core.model.AutomationData
+import com.rumpel.mpp.statesonsteroids.core.model.AutomationEntry
 
 private const val CHANNEL_ID: String = "test_channel"
 
@@ -38,57 +42,50 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 Geofence.GEOFENCE_TRANSITION_DWELL -> "dwell"
                 else -> "unknown"
             }
-            showNotification(
-                ctx,
-                geofencingEvent.triggeringGeofences.first().requestId,
-                "Geofence notified $action ",
-                2
-            )
+            val actionItems =
+                filterEntries(
+                    loadAutomationEntries(),
+                    action,
+                    geofencingEvent.triggeringGeofences.first().requestId
+                )
             val slackApi = SlackApi(assetJsonString(ctx))
-            slackApi.authorize {
-                if (it.isAuthenticated) {
-                    slackApi.setState("This is just a geofencing $action", ":earth_africa:", 0) { }
-                }
+            actionItems.lastOrNull()?.let {
+                showNotification(
+                    ctx,
+                    it.automationAction,
+                    "Geofence notified $action ",
+                    2
+                )
+                slackApi.setSlackState(it)
             }
-
-
         }
-
 
     }
 }
 
-fun showNotification(
-    context: Context,
-    text: String?,
-    title: String,
-    id: Int
-) {
+private fun filterEntries(
+    entries: List<AutomationEntry>,
+    automationAction: String,
+    fenceId: String
+): List<AutomationEntry> =
+    entries.filter { it.automationData is AutomationData.GpsAutomationData }
+        .filter { it.automationAction == automationAction }
+        .filter { it.id == fenceId }
 
-    var builder =
-        createNotification(
-            context,
-            title,
-            text
-        )
-
+fun showNotification(context: Context, text: String?, title: String, id: Int) {
+    val builder = createNotification(context, title, text)
     with(NotificationManagerCompat.from(context)) {
         // notificationId is a unique int for each notification that you must define
         notify(id, builder.build())
     }
 }
- fun createNotification(
-    context: Context,
-    title: String,
-    text: String?
-): NotificationCompat.Builder {
+
+fun createNotification(context: Context, title: String, text: String?): NotificationCompat.Builder {
     val intent = Intent(context, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
     val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-    var builder = NotificationCompat.Builder(context,
-        CHANNEL_ID
-    )
+    val builder = NotificationCompat.Builder(context, CHANNEL_ID)
         .setContentTitle(title)
         .setContentText(text)
         .setSmallIcon(R.drawable.exo_notification_small_icon)
@@ -96,9 +93,9 @@ fun showNotification(
         .setContentIntent(pendingIntent)
         .setAutoCancel(true)
 
-     createNotificationChannel(
-         context
-     )
+    createNotificationChannel(
+        context
+    )
     return builder
 }
 
@@ -113,8 +110,7 @@ private fun createNotificationChannel(context: Context) {
             description = descriptionText
         }
         // Register the channel with the system
-        val notificationManager =
-            getSystemService(context, NotificationManager::class.java)
+        val notificationManager = getSystemService(context, NotificationManager::class.java)
         notificationManager?.createNotificationChannel(channel)
     }
 }
