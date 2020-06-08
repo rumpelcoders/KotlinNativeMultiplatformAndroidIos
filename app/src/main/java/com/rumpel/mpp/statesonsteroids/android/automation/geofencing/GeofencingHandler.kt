@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android.geofencing
+package com.rumpel.mpp.statesonsteroids.android.automation.geofencing
 
 import android.Manifest
 import android.app.Activity
@@ -38,9 +38,10 @@ class GeofencingHandler(private val context: Context) {
         if (geofenceList.isEmpty()) {
             return
         }
+        geofencingClient.removeGeofences(geofencePendingIntent)
         geofencingClient.addGeofences(getGeofencingRequest(), geofencePendingIntent)?.run {
             addOnSuccessListener {
-                Toast.makeText(context, "geofence added", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "geofence (re-) added", Toast.LENGTH_SHORT).show()
             }
             addOnFailureListener {
                 Toast.makeText(context, "geofence failed to add", Toast.LENGTH_SHORT).show()

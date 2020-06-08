@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.rumpel.mpp.statesonsteroids.android.R
-import com.rumpel.mpp.statesonsteroids.android.geofencing.GeoFenceData
-import com.rumpel.mpp.statesonsteroids.android.geofencing.GeofencingHandler
-import com.rumpel.mpp.statesonsteroids.android.geofencing.checkGeofencingPermission
+import com.rumpel.mpp.statesonsteroids.android.automation.geofencing.GeoFenceData
+import com.rumpel.mpp.statesonsteroids.android.automation.geofencing.GeofencingHandler
+import com.rumpel.mpp.statesonsteroids.android.automation.geofencing.checkGeofencingPermission
+import com.rumpel.mpp.statesonsteroids.android.automation.wifi.WifiMonitoringService
 import com.rumpel.mpp.statesonsteroids.core.loadAutomationEntries
 import com.rumpel.mpp.statesonsteroids.core.model.AutomationData
 import com.rumpel.mpp.statesonsteroids.core.model.AutomationEntry
@@ -72,10 +73,7 @@ class AutomationFragment : Fragment(),
 
         context?.let { context ->
             try {
-                val handler =
-                    GeofencingHandler(
-                        context
-                    )
+                val handler = GeofencingHandler(context)
                 entries.filter { it.automationData is AutomationData.GpsAutomationData }
                     .forEach {
                         val gpsAutomationData =

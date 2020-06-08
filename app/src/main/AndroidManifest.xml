@@ -26,12 +26,12 @@
         </activity>
 
         <receiver
-                android:name=".geofencing.GeofenceBroadcastReceiver"
+                android:name="com.rumpel.mpp.statesonsteroids.android.automation.geofencing.GeofenceBroadcastReceiver"
                 android:enabled="true"
                 android:exported="true" />
 
         <service
-                android:name=".ui.automation.WifiMonitoringService"
+                android:name=".automation.wifi.WifiMonitoringService"
                 >
         </service>
     </application>

@@ -1,4 +1,4 @@
-package com.rumpel.mpp.statesonsteroids.android.ui.automation
+package com.rumpel.mpp.statesonsteroids.android.automation.wifi
 
 import android.app.Service
 import android.content.Context
@@ -10,7 +10,7 @@ import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.IBinder
 import com.rumpel.mpp.statesonsteroids.android.R
-import com.rumpel.mpp.statesonsteroids.android.geofencing.createNotification
+import com.rumpel.mpp.statesonsteroids.android.automation.geofencing.createNotification
 import com.rumpel.mpp.statesonsteroids.android.util.assetJsonString
 import com.rumpel.mpp.statesonsteroids.core.SlackApi
 import com.rumpel.mpp.statesonsteroids.core.loadAutomationEntries
@@ -28,7 +28,12 @@ class WifiMonitoringService : Service() {
         override fun onLost(network: Network?) {
             val slackApi = SlackApi(assetJsonString(this@WifiMonitoringService))
             val entries = loadAutomationEntries()
-            val actionItems = filterEntries(entries, STATE_DISCONNECTED, deviceName)
+            val actionItems =
+                filterEntries(
+                    entries,
+                    STATE_DISCONNECTED,
+                    deviceName
+                )
             actionItems.lastOrNull()?.let {
                 slackApi.setSlackState(it)
             }
@@ -45,7 +50,12 @@ class WifiMonitoringService : Service() {
             getDeviceName()
 
             val entries = loadAutomationEntries()
-            val actionItems = filterEntries(entries, STATE_CONNECTED, deviceName)
+            val actionItems =
+                filterEntries(
+                    entries,
+                    STATE_CONNECTED,
+                    deviceName
+                )
             actionItems.lastOrNull()?.let {
                 slackApi.setSlackState(it)
             }
